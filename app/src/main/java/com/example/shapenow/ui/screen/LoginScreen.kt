@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,13 +36,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shapenow.R
 
 
 @Composable
-fun LoginScreen(onEnterClick: ()-> Unit = {}){
+fun LoginScreen(innerPadding: PaddingValues){
     var text by remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize()){
         Image(
@@ -155,7 +157,7 @@ fun LoginScreen(onEnterClick: ()-> Unit = {}){
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Button(
-                        onClick = onEnterClick,
+                        onClick = {},
                         shape = RoundedCornerShape(6.dp),
                         modifier = Modifier
                             .width(150.dp)
@@ -169,4 +171,9 @@ fun LoginScreen(onEnterClick: ()-> Unit = {}){
 
         }
     }
+}
+@Preview
+@Composable
+fun LoginScreenPreview(){
+    LoginScreen(PaddingValues(start = 16.dp))
 }

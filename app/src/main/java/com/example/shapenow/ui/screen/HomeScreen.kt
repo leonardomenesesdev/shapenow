@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -34,13 +35,16 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 
 val rowdies = FontFamily(Font(R.font.rowdies_bold))
 @Composable
-fun HomeScreen(onEnterClick: ()-> Unit = {}){
+fun HomeScreen(innerPadding: PaddingValues, navController: NavHostController){
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.bg_photo),
@@ -102,18 +106,24 @@ fun HomeScreen(onEnterClick: ()-> Unit = {}){
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = onEnterClick,
+                        onClick = {navController.navigate("LoginScreen")},
                         shape = RoundedCornerShape(6.dp),
                         modifier = Modifier
                             .width(150.dp)
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F44D6))
                     ) {
-                        Text("Entrar", fontSize = 24.sp)
+                        Text("Login", fontSize = 24.sp)
                     }
                 }
             }
 
         }
     }
+}
+@Preview
+@Composable
+fun HomePreview(){
+    val navController = rememberNavController()
+    HomeScreen(PaddingValues(16.dp), navController)
 }
