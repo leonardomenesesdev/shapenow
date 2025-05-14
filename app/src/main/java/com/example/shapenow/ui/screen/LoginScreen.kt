@@ -35,15 +35,19 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
+import com.example.shapenow.ui.component.DefaultButton
 
 
 @Composable
-fun LoginScreen(innerPadding: PaddingValues){
+fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
     var text by remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize()){
         Image(
@@ -154,18 +158,25 @@ fun LoginScreen(innerPadding: PaddingValues){
                         ,
                         textAlign = TextAlign.Start
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(6.dp),
+                    Text(
+                        text = "Registrar-se",
+                        color = Color(0xFF4F44D6),
+                        fontSize = 16.sp,
                         modifier = Modifier
-                            .width(150.dp)
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F44D6))
-                    ) {
-                        Text("Entrar", fontSize = 24.sp)
-                    }
+                            .clickable {
+                                // Ação ao clicar (exemplo: onclick navegar para a tela de recuperação de senha)
+                                navController.navigate("RegisterScreen")
+                            }
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, start = 30.dp)
+                        ,
+                        textAlign = TextAlign.Start
+                    )
+                    DefaultButton(
+                        modifier = Modifier.width(150.dp).height(50.dp),
+                        text = "Entrar",
+                        onClick = {}
+                    )
                 }
             }
 
@@ -175,5 +186,6 @@ fun LoginScreen(innerPadding: PaddingValues){
 @Preview
 @Composable
 fun LoginScreenPreview(){
-    LoginScreen(PaddingValues(start = 16.dp))
+    val navController = rememberNavController()
+    LoginScreen(PaddingValues(start = 16.dp), navController)
 }

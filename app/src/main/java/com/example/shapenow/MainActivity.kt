@@ -16,7 +16,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.ui.screen.HomeScreen
 import com.example.shapenow.ui.screen.LoginScreen
+import com.example.shapenow.ui.screen.register.RegisterScreen
 import com.example.shapenow.ui.theme.ShapeNowTheme
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +36,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable ("LoginScreen") {
                             Scaffold (modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                LoginScreen(innerPadding)
+                                LoginScreen(innerPadding, navController)
+                            }
+                        }
+                        composable ("RegisterScreen") {
+                            Scaffold (modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                RegisterScreen(innerPadding)
                             }
                         }
                     }

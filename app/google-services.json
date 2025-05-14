@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743403797784",
+    "project_id": "shapenow-8dd4b",
+    "storage_bucket": "shapenow-8dd4b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743403797784:android:4611eefd780ea4ba3cf26d",
+        "android_client_info": {
+          "package_name": "com.example.shapenow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHhvqSvlAY9z18R6D4NekHHnUh2FisckU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
