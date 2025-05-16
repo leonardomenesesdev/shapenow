@@ -1,6 +1,6 @@
-package com.example.shapenow.ui.screen
+package com.example.shapenow.ui.screen.Login
 
-import android.widget.TextView
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,13 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,11 +41,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.ui.component.DefaultButton
+import com.example.shapenow.ui.component.DefaultTextField
+import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.viewmodel.LoginViewModel
 
 
 @Composable
-fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
-    var text by remember { mutableStateOf("") }
+fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: () -> Unit){
+    val loginState by loginViewModel.loginState.collectAsState()
+    var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
+    var errorMsg by remember { mutableStateOf<String?>(null) }
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.bg_photo),
@@ -113,21 +116,13 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
-                        text = "Matrícula ou CPF",
+                        text = "Insira seu email",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 30.dp),
-                        value = text,
-                        onValueChange = {text = it},
-                        label = {Text("Insira a sua matrícula ou CPF")},
-                        singleLine = true,
-
-                    )
+                    DefaultTextField(modifier = Modifier, label = "Email", value = email, onValueChange = {email = it}, padding = 10)
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
@@ -137,14 +132,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 30.dp),
-                        value = text,
-                        onValueChange = {text = it},
-                        label = {Text("Insira a sua senha")},
-                        singleLine = true,
-                        )
+                    DefaultTextField(modifier = Modifier, label = "Senha", value = senha, onValueChange = {senha = it}, padding = 10)
                     Text(
                         text = "Esqueci minha senha",
                         color = Color(0xFF4F44D6),
@@ -175,8 +163,21 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
                     DefaultButton(
                         modifier = Modifier.width(150.dp).height(50.dp),
                         text = "Entrar",
-                        onClick = {}
+                        onClick = {loginViewModel.login(email, senha)}
                     )
+                    when(loginState){
+                        is LoginViewModel.LoginState.Loading -> {
+                            CircularProgressIndicator()
+                        }
+                        is LoginViewModel.LoginState.Error -> {
+                            errorMsg = (loginState as LoginViewModel.LoginState.Error).message
+                            Text(text = errorMsg!!, color = Color.Red)
+                        }
+                        is LoginViewModel.LoginState.Success ->{
+                            onLoginSucess()
+                        }
+                        else -> {}
+                    }
                 }
             }
 
@@ -187,5 +188,5 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController){
 @Composable
 fun LoginScreenPreview(){
     val navController = rememberNavController()
-    LoginScreen(PaddingValues(start = 16.dp), navController)
+//    LoginScreen(PaddingValues(start = 16.dp), navController, )
 }
