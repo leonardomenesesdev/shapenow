@@ -67,4 +67,5 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx")
     implementation(libs.firebase.firestore.ktx)
 
+
 }

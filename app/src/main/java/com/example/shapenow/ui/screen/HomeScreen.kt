@@ -108,14 +108,15 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavHostController){
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = {navController.navigate("LoginScreen")},
+                        onClick = {                            Log.i("RegisterScreen", "Botão de registrar clicado")
+                            navController.navigate("LoginScreen")},
                         shape = RoundedCornerShape(6.dp),
                         modifier = Modifier
                             .width(150.dp)
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F44D6))
                     ) {
-                        Text("Login", fontSize = 24.sp)
+                        Text("Acessar", fontSize = 24.sp)
                     }
 
                 }

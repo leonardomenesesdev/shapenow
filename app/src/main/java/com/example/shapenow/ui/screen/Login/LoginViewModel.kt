@@ -20,7 +20,7 @@ class LoginViewModel : ViewModel() {
             _loginState.value = if (success) {
                 LoginState.Success(user)
             } else {
-                LoginState.Error(error ?: "Erro desconhecido")
+                LoginState.Error(error ?: "Erro ao fazer login")
             }
         }
     }

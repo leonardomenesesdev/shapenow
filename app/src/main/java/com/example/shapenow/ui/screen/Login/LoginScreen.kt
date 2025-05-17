@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -163,8 +166,11 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     DefaultButton(
                         modifier = Modifier.width(150.dp).height(50.dp),
                         text = "Entrar",
-                        onClick = {loginViewModel.login(email, senha)}
+                        onClick = {
+                            Log.i("RegisterScreen", "Botão de registrar clicado")
+                            loginViewModel.login(email, senha)}
                     )
+//
                     when(loginState){
                         is LoginViewModel.LoginState.Loading -> {
                             CircularProgressIndicator()
@@ -183,10 +189,4 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
 
         }
     }
-}
-@Preview
-@Composable
-fun LoginScreenPreview(){
-    val navController = rememberNavController()
-//    LoginScreen(PaddingValues(start = 16.dp), navController, )
 }
