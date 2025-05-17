@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 fun DefaultButton( modifier: Modifier, text: String, onClick: () -> Unit, ){
     Spacer(modifier = Modifier.height(20.dp))
     Button(
-        onClick = {},
+        onClick = onClick,
         shape = RoundedCornerShape(6.dp),
         modifier = Modifier
             .width(150.dp)
@@ -26,4 +26,5 @@ fun DefaultButton( modifier: Modifier, text: String, onClick: () -> Unit, ){
     ) {
         Text(text = text, fontSize = 24.sp)
     }
+    Spacer(modifier = Modifier.height(20.dp))
 }
