@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
+import com.example.shapenow.data.datasource.model.User
 import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
@@ -50,7 +51,7 @@ import com.example.shapenow.viewmodel.LoginViewModel
 
 
 @Composable
-fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: () -> Unit){
+fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: (user: User?) -> Unit){
     val loginState by loginViewModel.loginState.collectAsState()
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -180,7 +181,8 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                             Text(text = errorMsg!!, color = Color.Red)
                         }
                         is LoginViewModel.LoginState.Success ->{
-                            onLoginSucess()
+                            val user = (loginState as LoginViewModel.LoginState.Success).user
+                            onLoginSucess(user)
                         }
                         else -> {}
                     }
