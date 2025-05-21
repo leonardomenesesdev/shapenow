@@ -6,5 +6,5 @@ data class Exercise(
     val weight: String = "",
     val repetitions: String = "",
     val rest: String = "",
-    val obs: String = ""
+    val obs: String? = null//antes era val obs: String = ""
 )
