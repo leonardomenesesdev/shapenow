@@ -187,7 +187,7 @@ object Mock {
 
     val workoutA = Workout(
         id = "w1",
-        name = "Treino A ",
+        title = "Treino A ",
         description = "Peito e Biceps",
         coachId = "c123",
         studentId = "s456",
@@ -200,7 +200,7 @@ object Mock {
     )
     val workoutB = Workout(
         id = "w1",
-        name = "Treino B ",
+        title = "Treino B ",
         description = "Inferiores",
         coachId = "c123",
         studentId = "s456",
@@ -211,7 +211,7 @@ object Mock {
     )
     val workoutC = Workout(
         id = "w1",
-        name = "Treino C ",
+        title = "Treino C ",
         description = "Costas, Tricpes e Ombro",
         coachId = "c123",
         studentId = "s456",

@@ -10,59 +10,58 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CreateWorkoutViewModel(
-    private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-
+class CreateWorkoutViewmodel: ViewModel() {
+    private val workoutRepository = WorkoutRepository()
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState: StateFlow<UiState> = _uiState
+        val uiState: StateFlow<UiState> = _uiState
 
-    var title = ""
-    var description = ""
-    var studentId = ""
-    private val exercises = mutableListOf<Exercise>()
+        var title = ""
+        var description = ""
+        var studentId = ""
+        private val exercises = mutableListOf<Exercise>()
 
-    fun addExercise(exercise: Exercise) {
-        exercises.add(exercise)
-    }
-
-    fun removeExercise(index: Int) {
-        if (index in exercises.indices) {
-            exercises.removeAt(index)
-        }
-    }
-
-    fun getExercises(): List<Exercise> = exercises
-
-    fun createWorkout() {
-        if (title.isBlank() || studentId.isBlank() || exercises.isEmpty()) {
-            _uiState.value = UiState.Error("Todos os campos devem ser preenchidos.")
-            return
+        fun addExercise(exercise: Exercise) {
+            exercises.add(exercise)
         }
 
-        val workout = Workout(
-            id = UUID.randomUUID().toString(),
-            title = title,
-            description = description,
-            studentId = studentId,
-            exercises = exercises
-        )
-
-        _uiState.value = UiState.Loading
-        viewModelScope.launch {
-            val result = workoutRepository.addWorkout(workout)
-            _uiState.value = if (result.isSuccess) {
-                UiState.Success
-            } else {
-                UiState.Error(result.exceptionOrNull()?.message ?: "Erro desconhecido")
+        fun removeExercise(index: Int) {
+            if (index in exercises.indices) {
+                exercises.removeAt(index)
             }
         }
-    }
 
-    sealed class UiState {
-        object Idle : UiState()
-        object Loading : UiState()
-        object Success : UiState()
-        data class Error(val message: String) : UiState()
-    }
+        fun getExercises(): List<Exercise> = exercises
+
+        fun createWorkout() {
+            if (title.isBlank() || studentId.isBlank() || exercises.isEmpty()) {
+                _uiState.value = UiState.Error("Todos os campos devem ser preenchidos.")
+                return
+            }
+
+            val workout = Workout(
+                id = UUID.randomUUID().toString(),
+                title = title,
+                description = description,
+                studentId = studentId,
+                exercises = exercises
+            )
+
+            _uiState.value = UiState.Loading
+            viewModelScope.launch {
+                val result = workoutRepository.addWorkout(workout)
+                _uiState.value = if (result.isSuccess) {
+                    UiState.Success
+                } else {
+                    UiState.Error(result.exceptionOrNull()?.message ?: "Erro desconhecido")
+                }
+            }
+        }
+
+        sealed class UiState {
+            object Idle : UiState()
+            object Loading : UiState()
+            object Success : UiState()
+            data class Error(val message: String) : UiState()
+        }
+
 }

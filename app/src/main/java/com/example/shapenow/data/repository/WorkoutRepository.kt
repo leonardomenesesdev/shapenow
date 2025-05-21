@@ -9,29 +9,6 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class WorkoutRepository {
-//    private val data = FirebaseFirestore.getInstance()
-//    suspend fun getWorkouts(coachId: String): List<Workout>{
-//        return try {
-//            data.collection("workouts")
-//                .whereEqualTo("coachId", coachId)
-//                .get()
-//                .await()
-//                .map{ doc ->
-//                    Workout(
-//                        id=doc.id,
-//                        title = doc.getString("title") ?: "",
-//                        description = doc.getString("description") ?: "",
-//                        coachId = doc.getString("coachId") ?: "",
-//                        studentId = doc.getString("studentId") ?: "",
-//                        exercises = doc.get("exercises") as List<Exercise>
-//                    )
-//
-//                }
-//        }
-//        catch (e: Exception) {
-//            emptyList()
-//        }
-//    }
 private val data = FirebaseFirestore.getInstance()
     private val workoutsCollection = data.collection("workouts")
     private val usersCollection = data.collection("users")
@@ -43,7 +20,7 @@ private val data = FirebaseFirestore.getInstance()
 
             // Buscar documento do usuário
             val userDoc = usersCollection.document(currentUser.uid).get().await()
-            val userType = userDoc.getString("type")
+            val userType = userDoc.getString("tipo")
 
             // Validar se é um coach
             if (userType != "coach") {
@@ -64,6 +41,28 @@ private val data = FirebaseFirestore.getInstance()
             Result.success(workouts)
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+        suspend fun getWorkouts(coachId: String): List<Workout>{
+        return try {
+            data.collection("workouts")
+                .whereEqualTo("coachId", coachId)
+                .get()
+                .await()
+                .map{ doc ->
+                    Workout(
+                        id=doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        coachId = doc.getString("coachId") ?: "",
+                        studentId = doc.getString("studentId") ?: "",
+                        exercises = doc.get("exercises") as List<Exercise>
+                    )
+
+                }
+        }
+        catch (e: Exception) {
+            emptyList()
         }
     }
 
