@@ -22,6 +22,8 @@ import com.example.shapenow.ui.screen.register.RegisterScreen
 import com.example.shapenow.ui.theme.ShapeNowTheme
 import com.example.shapenow.viewmodel.LoginViewModel
 import com.example.shapenow.ui.screen.register.RegisterViewModel
+import com.example.shapenow.ui.screen.Coach.CreateWorkout.CreateWorkoutScreen
+import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("ViewModelConstructorInComposable")
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
+            val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
 
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "HomeScreen") {
@@ -87,12 +90,24 @@ class MainActivity : ComponentActivity() {
                                 viewModel = homeCoachViewModel,
                                 coachId = coachId,
                                 onCreateWorkout = {
-                                    // ação ao criar treino
-                                    // exemplo: navController.navigate("CreateWorkoutScreen")
+                                    navController.navigate("CreateWorkout")
                                 }
                             )
                         }
                     }
+                    composable("CreateWorkout") {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+                            CreateWorkoutScreen(
+                                padding,
+                                viewModel = createWorkoutViewModel,
+                                onWorkoutCreated = {
+                                    // Ex: voltar ou mostrar uma snackbar
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
+
                 }
             }
         }
