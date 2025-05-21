@@ -23,7 +23,7 @@ object Mock {
 
     val workout = Workout(
         id = "w1",
-        name = "Treino A",
+        title = "Treino A",
         description = "Treino de peito e costas",
         coachId = "c123",
         studentId = "s456",
