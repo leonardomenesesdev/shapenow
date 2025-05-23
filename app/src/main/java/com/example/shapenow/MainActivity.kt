@@ -23,6 +23,8 @@ import com.example.shapenow.ui.theme.ShapeNowTheme
 import com.example.shapenow.viewmodel.LoginViewModel
 import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.CreateWorkout.CreateWorkoutScreen
+import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
+import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 class MainActivity : ComponentActivity() {
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
             val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
-
+            val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel ()
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "HomeScreen") {
                     composable("HomeScreen") {
@@ -91,6 +93,10 @@ class MainActivity : ComponentActivity() {
                                 coachId = coachId,
                                 onCreateWorkout = {
                                     navController.navigate("CreateWorkout")
+                                },
+                                onWorkoutClick = {
+                                        workoutId -> //TODO DIRECIONAR PARA WorkoutDetailScreen
+                                    navController.navigate("WorkoutDetailsScreen/$workoutId")
                                 }
                             )
                         }
@@ -107,6 +113,18 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
+                    composable("WorkoutDetailsScreen/{workoutId}") { backStackEntry ->
+                        val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            WorkoutDetailScreen(
+                                innerPadding = innerPadding,
+                                viewModel = workoutDetailViewmodel,
+                                workoutId = workoutId
+                            )
+                        }
+                    }
+
 
                 }
             }

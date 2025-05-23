@@ -1,4 +1,4 @@
-package com.example.shapenow.ui.screen.Coach
+package com.example.shapenow.ui.screen.Coach.WorkoutDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -24,26 +23,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
-import com.example.shapenow.ui.component.WorkoutItem
+import com.example.shapenow.ui.component.ExerciseItem
 import com.example.shapenow.ui.screen.rowdies
 
-
 @Composable
-fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachId: String, onCreateWorkout:()->Unit,  onWorkoutClick: (workoutId: String) -> Unit){ //possivel erro em viewmodel
-    val workouts by viewModel.workouts.collectAsState()
+fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailViewmodel, workoutId: String){ //possivel erro em viewmodel
+    val exercise by viewModel.exercises.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.loadWorkouts(coachId)
+        viewModel.loadExercises(workoutId = workoutId)
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFF1B1B2F)).padding(vertical = 24.dp)){
         Column (modifier = Modifier.padding(16.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Treinos Passados",
+                text = "Exercícios",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -54,28 +50,19 @@ fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachI
                     .padding(bottom = 24.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            workouts.forEach { workout ->
+            exercise.forEach { exercise ->
                 // Certifique-se que seu objeto workout tem uma propriedade 'id'
-                WorkoutItem(
-                    workout = workout,
+                ExerciseItem(
+                    exercise = exercise,
                     onClick = {
                         // Chamar a função de callback passando o ID do workout
-                        onWorkoutClick(workout.id) // Supondo que workout.id existe
                     },
                     modifier = Modifier.padding(bottom = 12.dp) // Adiciona espaçamento inferior
                 )
             }
 
         }
-        FloatingActionButton(
-            onClick = { onCreateWorkout() },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp),
-            containerColor = Color(0xFF2F0C6D)
-        ){
-            Icon(Icons.Default.Add, contentDescription = "Criar Treino", tint = Color.White)
-        }
+
     }
 
 }
