@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -29,7 +30,7 @@ import com.example.shapenow.ui.component.ExerciseItem
 import com.example.shapenow.ui.screen.rowdies
 
 @Composable
-fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailViewmodel, workoutId: String){ //possivel erro em viewmodel
+fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailViewmodel, workoutId: String, onCreateExercise:()->Unit){
     val exercise by viewModel.exercises.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadExercises(workoutId = workoutId)
@@ -51,7 +52,6 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
             )
             Spacer(modifier = Modifier.height(16.dp))
             exercise.forEach { exercise ->
-                // Certifique-se que seu objeto workout tem uma propriedade 'id'
                 ExerciseItem(
                     exercise = exercise,
                     onClick = {
@@ -62,7 +62,30 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
             }
 
         }
-
+        //Botao para criar exercicio
+        //TODO DIRECIONAR PARA UMA TELA CreateExerciseScreen
+        FloatingActionButton(
+            onClick = { onCreateExercise() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFF2F0C6D)
+        ){
+            Icon(Icons.Default.Add, contentDescription = "Criar Treino", tint = Color.White)
+        }
+        //BOTAO PARA DIRECIONAR A UMA TELA DE ASSOCIAR UM TREINO PRONTO A UM ALUNO
+        //TODO DIRECIONAR PARA UMA TELA AssociateWorkoutScreen
+        FloatingActionButton(
+            onClick = { },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 10.dp)
+                .height(70.dp)
+                .width(200.dp),
+            containerColor = Color(0xFF2F0C6D)
+        ){
+           Text(text = "Associar a um aluno", color = Color.White, fontSize = 18.sp)
+        }
     }
 
 }

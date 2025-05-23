@@ -14,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
+import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
+import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseViewmodel
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
 import com.example.shapenow.ui.screen.HomeScreen
@@ -40,7 +42,8 @@ class MainActivity : ComponentActivity() {
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
             val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
-            val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel ()
+            val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
+            val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "HomeScreen") {
                     composable("HomeScreen") {
@@ -59,9 +62,11 @@ class MainActivity : ComponentActivity() {
                                         is Coach -> {
                                             navController.navigate("HomeCoach/{coachId}")
                                         }
+
                                         is Student -> {
                                             navController.navigate("HomeScreen")
                                         }
+
                                         else -> {
                                             navController.navigate("HomeScreen")
                                         }
@@ -94,8 +99,7 @@ class MainActivity : ComponentActivity() {
                                 onCreateWorkout = {
                                     navController.navigate("CreateWorkout")
                                 },
-                                onWorkoutClick = {
-                                        workoutId -> //TODO DIRECIONAR PARA WorkoutDetailScreen
+                                onWorkoutClick = { workoutId -> //TODO DIRECIONAR PARA WorkoutDetailScreen
                                     navController.navigate("WorkoutDetailsScreen/$workoutId")
                                 }
                             )
@@ -120,12 +124,29 @@ class MainActivity : ComponentActivity() {
                             WorkoutDetailScreen(
                                 innerPadding = innerPadding,
                                 viewModel = workoutDetailViewmodel,
-                                workoutId = workoutId
+                                workoutId = workoutId,
+                                onCreateExercise = {
+                                    navController.navigate("CreateExerciseScreen/$workoutId")
+                                }
+
                             )
                         }
                     }
+                    composable(("CreateExerciseScreen/{workoutId}")) { backStackEntry ->
+                        val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            CreateExerciseScreen(
+                                innerPadding = innerPadding,
+                                viewModel = createExerciseViewmodel,
+                                onExerciseCreated = {
+                                    navController.popBackStack()
+                                },
+                                workoutId = workoutId
+                            )
+                        }
 
 
+                    }
                 }
             }
         }

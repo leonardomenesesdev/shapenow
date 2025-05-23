@@ -1,5 +1,6 @@
 package com.example.shapenow.data.repository
 
+import android.util.Log
 import android.util.Log.e
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.datasource.model.Workout
@@ -10,7 +11,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class WorkoutRepository {
-private val data = FirebaseFirestore.getInstance()
+    private val data = FirebaseFirestore.getInstance()
     private val workoutsCollection = data.collection("workouts")
     private val usersCollection = data.collection("users")
 
@@ -35,8 +36,28 @@ private val data = FirebaseFirestore.getInstance()
         }
     }
 
+    suspend fun updateWorkout(workoutId: String, exercise: Exercise): Result<Unit> {
+        return try {
+            val workoutRef = workoutsCollection.document(workoutId)
+            val snapshot = workoutRef.get().await()
 
-        suspend fun getWorkouts(coachId: String): List<Workout>{
+            val workout = snapshot.toObject(Workout::class.java)
+            if (workout == null) return Result.failure(Exception("Treino não encontrado"))
+
+            val updatedExercises = workout.exercises.toMutableList().apply {
+                add(exercise)
+            }
+
+            workoutRef.update("exercises", updatedExercises).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("WorkoutRepository", "Erro ao atualizar treino", e)
+            Result.failure(e)
+        }
+    }
+
+
+    suspend fun getWorkouts(coachId: String): List<Workout>{
         return try {
             data.collection("workouts")
                 .get()
@@ -71,5 +92,6 @@ private val data = FirebaseFirestore.getInstance()
             Result.failure(e)
         }
     }
+
 
 }
