@@ -1,5 +1,6 @@
 package com.example.shapenow.data.repository
 
+import android.util.Log.e
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.datasource.model.Workout
 import com.google.firebase.Firebase
@@ -34,19 +35,10 @@ private val data = FirebaseFirestore.getInstance()
         }
     }
 
-    suspend fun getAllWorkouts(): Result<List<Workout>> {
-        return try {
-            val snapshot = workoutsCollection.get().await()
-            val workouts = snapshot.toObjects(Workout::class.java)
-            Result.success(workouts)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
+
         suspend fun getWorkouts(coachId: String): List<Workout>{
         return try {
             data.collection("workouts")
-                .whereEqualTo("coachId", coachId)
                 .get()
                 .await()
                 .map{ doc ->
@@ -63,6 +55,20 @@ private val data = FirebaseFirestore.getInstance()
         }
         catch (e: Exception) {
             emptyList()
+        }
+    }
+    suspend fun getExercises(workoutId: String): Result<List<Exercise>>{
+        return try{
+            val doc = workoutsCollection.document(workoutId).get().await()
+            val workout = doc.toObject(Workout::class.java)
+            if(workout != null){
+                Result.success(workout.exercises)
+            } else{
+                Result.failure(Exception("Treino não encontrado"))
+            }
+
+        } catch (e: Exception){
+            Result.failure(e)
         }
     }
 
