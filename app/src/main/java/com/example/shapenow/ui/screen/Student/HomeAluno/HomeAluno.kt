@@ -1,4 +1,4 @@
-package com.example.shapenow.ui.screen.WorkoutSelector
+package com.example.shapenow.ui.screen.Student.HomeAluno
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 
 @Composable
-fun WorkoutSelectorScreen(innerPadding: PaddingValues, navController: NavController) {
+fun HomeAluno(innerPadding: PaddingValues, navController: NavController) {
     val backgroundColor = Color(0xFF1B1B2F)
     val headerColor = Color(0xFF2F0C6D)
     val cardColor = Color(0xFF512DA8)
@@ -111,5 +111,5 @@ fun WorkoutCard(title: String, cardColor: Color, textColor: Color, highlightColo
 @Composable
 fun WorkoutScreenPreview() {
     val navController = rememberNavController()
-    WorkoutSelectorScreen(PaddingValues(0.dp), navController)
+    HomeAluno(PaddingValues(0.dp), navController)
 }

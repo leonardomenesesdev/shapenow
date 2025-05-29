@@ -27,18 +27,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
-import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 @Composable
-fun CreateExerciseScreen(innerPadding: PaddingValues, viewModel: CreateExerciseViewmodel, onExerciseCreated: ()-> Unit, workoutId: String){
-    val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.resetState()
-        viewModel.loadExercises(workoutId)
+fun CreateExerciseScreen(
+    innerPadding: PaddingValues,
+    onCreate: () -> Unit
+){
+    val viewModel: CreateExerciseViewmodel = viewModel()
+    val saveSuccess by viewModel.saveSuccess
+    LaunchedEffect(saveSuccess) {
+        if (saveSuccess) {
+            onCreate()
+        }
     }
 
     var exerciseName by remember { mutableStateOf("") }
@@ -72,8 +78,8 @@ fun CreateExerciseScreen(innerPadding: PaddingValues, viewModel: CreateExerciseV
             )
             DefaultTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = exerciseName,
-                onValueChange = { exerciseName = it },
+                value = viewModel.name.value,
+                onValueChange = viewModel::onNameChange,
                 label = "Exercício",
                 padding = 10
             )
@@ -87,8 +93,8 @@ fun CreateExerciseScreen(innerPadding: PaddingValues, viewModel: CreateExerciseV
             )
             DefaultTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = repetitions,
-                onValueChange = { repetitions = it },
+                value = viewModel.repetitions.value,
+                onValueChange = viewModel::onRepetitionsChange,
                 label = "Repetições",
                 padding = 10
             )
@@ -96,36 +102,9 @@ fun CreateExerciseScreen(innerPadding: PaddingValues, viewModel: CreateExerciseV
                 modifier = Modifier.align(Alignment.End),
                 text = "Salvar",
                 onClick = {
-                    if (exerciseName.isNotBlank() && repetitions.isNotBlank()) {
-                        viewModel.addExercise(
-                            workoutId,
-                            Exercise(
-                                name = exerciseName,
-                                repetitions = repetitions
-                            )
-                        )
-                        exerciseName = ""
-                        repetitions = ""
-                    }
-                }
+                    viewModel.saveExercise()
+                },
             )
-        }
-            when (uiState) {
-            is CreateExerciseViewmodel.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally as Alignment))
-            }
-            is CreateExerciseViewmodel.UiState.Error -> {
-                Text(
-                    text = (uiState as CreateExerciseViewmodel.UiState.Error).message,
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-            is CreateExerciseViewmodel.UiState.Success -> {
-                Text("Exercício criado com sucesso!", color = Color.Green)
-                onExerciseCreated()
-            }
-            else -> {}
         }
     }
 

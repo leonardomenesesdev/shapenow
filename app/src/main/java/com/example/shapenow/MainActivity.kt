@@ -111,9 +111,9 @@ class MainActivity : ComponentActivity() {
                                 padding,
                                 viewModel = createWorkoutViewModel,
                                 onWorkoutCreated = {
-                                    // Ex: voltar ou mostrar uma snackbar
                                     navController.popBackStack()
-                                }
+                                },
+
                             )
                         }
                     }
@@ -134,14 +134,10 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(("CreateExerciseScreen/{workoutId}")) { backStackEntry ->
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
-                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
                             CreateExerciseScreen(
                                 innerPadding = innerPadding,
-                                viewModel = createExerciseViewmodel,
-                                onExerciseCreated = {
-                                    navController.popBackStack()
-                                },
-                                workoutId = workoutId
+                                onCreate={(navController.popBackStack())}
                             )
                         }
 
