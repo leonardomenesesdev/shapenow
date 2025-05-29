@@ -1,4 +1,4 @@
-package com.example.shapenow.ui.screen.WorkoutSelector
+package com.example.shapenow.ui.screen.Member.WorkoutSelector
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
