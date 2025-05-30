@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -33,7 +34,7 @@ import com.example.shapenow.ui.screen.rowdies
 
 
 @Composable
-fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachId: String, onCreateWorkout:()->Unit,  onWorkoutClick: (workoutId: String) -> Unit){ //possivel erro em viewmodel
+fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachId: String, onCreateExercise:()->Unit , onCreateWorkout:()->Unit,  onWorkoutClick: (workoutId: String) -> Unit){ //possivel erro em viewmodel
     val workouts by viewModel.workouts.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadWorkouts(coachId)
@@ -66,6 +67,11 @@ fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachI
                 )
             }
 
+            Button(
+                onClick = {onCreateExercise()}
+            ){
+
+            }
         }
         FloatingActionButton(
             onClick = { onCreateWorkout() },

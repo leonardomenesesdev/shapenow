@@ -5,12 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shapenow.data.datasource.model.Exercise
-import com.example.shapenow.data.datasource.model.Workout
 import com.example.shapenow.data.repository.ExerciseRepository
 import com.example.shapenow.data.repository.WorkoutRepository
-import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CreateExerciseViewmodel: ViewModel() {

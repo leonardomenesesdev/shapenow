@@ -38,6 +38,7 @@ class ExerciseRepository {
             null
         }
     }
+    //pega todos os exercicios
     suspend fun getExercises(): List<Exercise>{
         return try {
             val exercises = data.collection("exercises").get().await()

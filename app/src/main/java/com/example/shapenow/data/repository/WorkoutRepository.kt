@@ -92,6 +92,51 @@ class WorkoutRepository {
             Log.e("WorkoutRepository", "Erro ao deletar o treino", e)
         }
     }
+    suspend fun getWorkoutsByCoach(coachId: String): List<Workout>{
+        return try {
+            data.collection("workouts")
+                .get()
+                .await()
+                .map{ doc ->
+                    Workout(
+                        id=doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        coachId = doc.getString("coachId") ?: "",
+                        studentId = doc.getString("studentId") ?: "",
+                        exercises = doc.get("exercises") as List<String>
+                    )
+
+                }
+        }
+        catch (e: Exception) {
+            emptyList()
+        }
+    }
+    suspend fun getExercisesFromWorkout(workoutId: String): List<Exercise> {
+        return try {
+            val workoutDoc = workoutsCollection.document(workoutId).get().await()
+            if (!workoutDoc.exists()) return emptyList()
+            val workout = workoutDoc.toObject(Workout::class.java) ?: return emptyList()
+            val exerciseIds = workout.exercises
+
+            val exercisesCollection = data.collection("exercises")
+            val exerciseList = mutableListOf<Exercise>()
+
+            for (exerciseId in exerciseIds) {
+                val doc = exercisesCollection.document(exerciseId).get().await()
+                if (doc.exists()) {
+                    doc.toObject(Exercise::class.java)?.let { exerciseList.add(it) }
+                }
+            }
+
+            exerciseList
+        } catch (e: Exception) {
+            Log.e("WorkoutRepository", "Erro ao buscar exercícios do treino", e)
+            emptyList()
+        }
+    }
+
 }
 
 

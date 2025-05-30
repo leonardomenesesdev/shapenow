@@ -1,154 +1,185 @@
-package com.example.shapenow.ui.screen.Coach.CreateWorkout
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle // Ícone para adicionar
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle // Ícone para já adicionado/remover
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.shapenow.data.datasource.model.Exercise
-import com.example.shapenow.ui.component.DefaultButton
-import com.example.shapenow.ui.component.DefaultTextField
-import com.example.shapenow.ui.screen.rowdies
-import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.shapenow.data.datasource.model.Exercise // Importe sua classe Exercise
+import com.example.shapenow.viewmodel.CreateWorkoutViewmodel // Importe seu ViewModel
 
-
+@SuppressLint("StateFlowValueCalledInComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateWorkoutScreen(
-    innerPadding: PaddingValues,
-    viewModel: CreateWorkoutViewmodel,
-    onWorkoutCreated: () -> Unit,
+    paddingValues: PaddingValues,
+    onWorkoutCreated: () -> Unit, // Callback para quando o treino for criado com sucesso
 ) {
+    val viewModel: CreateWorkoutViewmodel = viewModel()
+    val title by viewModel.title.collectAsState()
+    val description by viewModel.description.collectAsState() // Coletar estado da descrição
+    val searchQuery by viewModel.search.collectAsState()
+    val filteredExercises by viewModel.filteredExercises
+    val addedExerciseIds by viewModel.addedExercises.collectAsState()
+    val status by viewModel.status.collectAsState()
 
-    val uiState by viewModel.uiState.collectAsState()
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var studentId by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(uiState) {
-        if (uiState is CreateWorkoutViewmodel.UiState.Success) {
-            onWorkoutCreated()
+    LaunchedEffect(status) {
+        if (status.isNotBlank()) {
+            snackbarHostState.showSnackbar(
+                message = status,
+                duration = SnackbarDuration.Short
+            )
+            // Considerar limpar o status no ViewModel após exibição
+            // viewModel.clearStatus() // Você precisaria adicionar essa função no ViewModel
         }
     }
-    Box(modifier = Modifier.fillMaxSize()
-        .background(Color(0xFF1B1B2F))
-        .padding(vertical = 24.dp)) {
 
+    LaunchedEffect(searchQuery) {
+        viewModel.filterExercises(searchQuery)
+    }
+
+    Scaffold(
+        bottomBar = {
+            Button(
+                onClick = {
+                    viewModel.createWorkout {
+                        onWorkoutCreated() // Navegar ou mostrar mensagem de sucesso
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Concluir")
+            }
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(20.dp))
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-            "Criar novo treino",
-            fontWeight = FontWeight.Bold,
-            fontFamily = rowdies,
-            fontSize = 32.sp,
-            textAlign = TextAlign.Center,
-            color = Color.White
-        )
+            OutlinedTextField(
+                value = title,
+                onValueChange = { viewModel.onTitleChange(it) },
+                label = { Text("Título do treino") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Column (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
+            OutlinedTextField(
+                value = description,
+                onValueChange = { viewModel.onDescriptionChange(it) },
+                label = { Text("Descrição do treino") }, // Campo adicionado
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { viewModel.onSearch(it) },
+                    label = { Text("Buscar Exercício") },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { /* TODO: Implementar lógica de filtros se necessário */ },
+                    contentPadding = PaddingValues(horizontal = 12.dp)
+                ) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Filtros")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (filteredExercises.isEmpty() && searchQuery.isNotBlank()) {
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
-                    text = "Nome do treino",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
+                    "Nenhum exercício encontrado para \"$searchQuery\"",
+                    modifier = Modifier.padding(vertical = 16.dp)
                 )
-                DefaultTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = title,
-                    onValueChange = { title = it },
-                    label = "Nome do treino",
-                    padding = 10,
+            } else if (viewModel.addedExercises.value.isEmpty()) { // Acessando via allExercises (supondo que seja pública)
+                // Se allExercises for private, você pode adicionar um StateFlow no VM para isEmpty
+                Text(
+                    "Nenhum exercício disponível para seleção.",
+                    modifier = Modifier.padding(vertical = 16.dp)
                 )
-
-                DefaultTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = description,
-                    onValueChange = { description = it },
-                    label = "Descrição",
-                    padding = 10
-                )
-
-                DefaultTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = studentId,
-                    onValueChange = { studentId = it },
-                    label = "Id do estudante",
-                    padding = 10
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                DefaultButton(
-                    modifier = Modifier.align(Alignment.End),
-                    text = "Salvar",
-                    onClick = {
-                        viewModel.title = title
-                        viewModel.description = description
-                        viewModel.studentId = studentId
-                       viewModel.createWorkout()
-                    },
-                )
-
-
             }
 
 
-
-
-            when (uiState) {
-                is CreateWorkoutViewmodel.UiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            LazyColumn(
+                modifier = Modifier.weight(1f) // Ocupa o espaço restante
+            ) {
+                items(filteredExercises, key = { exercise -> exercise.id!! }) { exercise ->
+                    ExerciseListItem(
+                        exercise = exercise,
+                        isAdded = addedExerciseIds.contains(exercise.id),
+                        onToggleExercise = {
+                            if (addedExerciseIds.contains(exercise.id)) {
+                                viewModel.deleteExercise(exercise)
+                            } else {
+                                viewModel.addExercise(exercise)
+                            }
+                        }
+                    )
+                    Divider()
                 }
+            }
+        }
+    }
+}
 
-                is CreateWorkoutViewmodel.UiState.Error -> {
+@Composable
+fun ExerciseListItem(
+    exercise: Exercise,
+    isAdded: Boolean,
+    onToggleExercise: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(exercise.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            exercise.obs?.let {
+                if (it.isBlank()) {
                     Text(
-                        text = (uiState as CreateWorkoutViewmodel.UiState.Error).message,
-                        color = Color.Red
+                        "• ${exercise.obs}", // Usando o campo 'obs'
+                        fontSize = 14.sp,
+                        color = Color.Gray
                     )
                 }
-
-                is CreateWorkoutViewmodel.UiState.Success -> {
-                    Text("Treino criado com sucesso!", color = Color.Green)
-                    // Não chama navegação aqui!
-                }
-
-                else -> {}
             }
+        }
+        IconButton(onClick = onToggleExercise) {
+            Icon(
+                imageVector = if (isAdded) Icons.Filled.CheckCircle else Icons.Filled.AddCircle,
+                contentDescription = if (isAdded) "Remover Exercício" else "Adicionar Exercício",
+                tint = if (isAdded) MaterialTheme.colorScheme.primary else Color.Gray
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shapenow
 
+import CreateWorkoutScreen
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +25,6 @@ import com.example.shapenow.ui.screen.register.RegisterScreen
 import com.example.shapenow.ui.theme.ShapeNowTheme
 import com.example.shapenow.viewmodel.LoginViewModel
 import com.example.shapenow.ui.screen.register.RegisterViewModel
-import com.example.shapenow.ui.screen.Coach.CreateWorkout.CreateWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
@@ -99,6 +99,7 @@ class MainActivity : ComponentActivity() {
                                 onCreateWorkout = {
                                     navController.navigate("CreateWorkout")
                                 },
+                                onCreateExercise = {navController.navigate("CreateExerciseScreen")},
                                 onWorkoutClick = { workoutId -> //TODO DIRECIONAR PARA WorkoutDetailScreen
                                     navController.navigate("WorkoutDetailsScreen/$workoutId")
                                 }
@@ -106,13 +107,13 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("CreateWorkout") {
-                        Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             CreateWorkoutScreen(
-                                padding,
-                                viewModel = createWorkoutViewModel,
+                                paddingValues = innerPadding,
                                 onWorkoutCreated = {
                                     navController.popBackStack()
                                 },
+
 
                             )
                         }
@@ -126,14 +127,13 @@ class MainActivity : ComponentActivity() {
                                 viewModel = workoutDetailViewmodel,
                                 workoutId = workoutId,
                                 onCreateExercise = {
-                                    navController.navigate("CreateExerciseScreen/$workoutId")
+                                    navController.navigate("CreateExerciseScreen")
                                 }
 
                             )
                         }
                     }
-                    composable(("CreateExerciseScreen/{workoutId}")) { backStackEntry ->
-                        val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+                    composable(("CreateExerciseScreen")) { backStackEntry ->
                         Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
                             CreateExerciseScreen(
                                 innerPadding = innerPadding,
