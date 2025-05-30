@@ -14,7 +14,7 @@ class HomeCoachViewModel : ViewModel() {
     val workouts: StateFlow<List<Workout>> = _workout
     fun loadWorkouts(coachId: String){
         viewModelScope.launch {
-            _workout.value = workoutRepository.getWorkouts(coachId)
+            _workout.value = workoutRepository.getWorkoutsByCoach(coachId)
         }
     }
 }

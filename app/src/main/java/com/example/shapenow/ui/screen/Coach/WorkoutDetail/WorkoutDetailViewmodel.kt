@@ -14,17 +14,18 @@ import kotlinx.coroutines.launch
 
 class WorkoutDetailViewmodel : ViewModel() {
     private val workoutRepository = WorkoutRepository()
+
     private val _exercises = MutableStateFlow<List<Exercise>>(emptyList())
     val exercises: StateFlow<List<Exercise>> = _exercises
+
     fun loadExercises(workoutId: String) {
         viewModelScope.launch {
-            val result = workoutRepository.getExercises(workoutId)
-            result.onSuccess {
-                _exercises.value = it
-            }.onFailure {
-                Log.i("error", "error on workoutdetailviewmodel")
+            try {
+                val result = workoutRepository.getExercisesFromWorkout(workoutId)
+                _exercises.value = result
+            } catch (e: Exception) {
+                Log.e("WorkoutDetailViewmodel", "Erro ao carregar exercícios", e)
             }
         }
     }
-
 }

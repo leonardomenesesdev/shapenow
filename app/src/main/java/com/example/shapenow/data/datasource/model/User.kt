@@ -10,7 +10,7 @@ sealed class User (
         override val uid: String?,
         override val name: String?,
         override val email: String?,
-//        val workouts: List<Workouts>? = null TODO
+        val workouts: List<String>? = null //pode dar ruim aq
     ): User(uid, name, email, "student")
     data class Coach(
         override val uid: String?,

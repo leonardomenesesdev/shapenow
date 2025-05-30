@@ -3,61 +3,96 @@ package com.example.shapenow.data.repository
 import android.util.Log
 import android.util.Log.e
 import com.example.shapenow.data.datasource.model.Exercise
+import com.example.shapenow.data.datasource.model.Student
 import com.example.shapenow.data.datasource.model.Workout
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class WorkoutRepository {
+    private val auth = Firebase.auth
     private val data = FirebaseFirestore.getInstance()
     private val workoutsCollection = data.collection("workouts")
     private val usersCollection = data.collection("users")
 
-    suspend fun addWorkout(workout: Workout): Result<Unit> {
+    suspend fun addWorkout(workout: Workout): Result<Void?> {
         return try {
-            val currentUser = Firebase.auth.currentUser
-                ?: return Result.failure(Exception("Usuário não autenticado"))
-
-            // Buscar documento do usuário
-            val userDoc = usersCollection.document(currentUser.uid).get().await()
-            val userType = userDoc.getString("tipo")
-
-            // Validar se é um coach
-            if (userType != "coach") {
-                return Result.failure(Exception("Apenas coaches podem criar treinos"))
-            }
-
-            workoutsCollection.document(workout.id).set(workout).await()
-            Result.success(Unit)
+            val db = FirebaseFirestore.getInstance()
+            db.collection("workouts")
+                .document(workout.id)
+                .set(workout)
+                .await()
+            Result.success(null)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
-    suspend fun updateWorkout(workoutId: String, exercise: Exercise): Result<Unit> {
+    suspend fun getWorkoutById(workoutId: String): Workout? {
         return try {
-            val workoutRef = workoutsCollection.document(workoutId)
-            val snapshot = workoutRef.get().await()
-
-            val workout = snapshot.toObject(Workout::class.java)
-            if (workout == null) return Result.failure(Exception("Treino não encontrado"))
-
-            val updatedExercises = workout.exercises.toMutableList().apply {
-                add(exercise)
-            }
-
-            workoutRef.update("exercises", updatedExercises).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Log.e("WorkoutRepository", "Erro ao atualizar treino", e)
-            Result.failure(e)
+            val workoutDoc = workoutsCollection.document(workoutId).get().await()
+            if(!workoutDoc.exists()) return null
+            workoutDoc.toObject(Workout::class.java)
+        } catch (e:Exception) {
+            Log.e("WorkoutRepository", "Erro ao obter o treino por ID", e)
+            null
         }
     }
+    suspend fun getWorkoutsForStudent(): List<Workout> {
+        val user = auth.currentUser
+        Log.d("WorkoutRepository", "User ID: ${user?.email}")
+        if(user == null) return emptyList()
+        return try{
+            val doc = data.collection("students").document(user.uid).get().await()
+            if(!doc.exists()) return emptyList()
+            val student = doc.toObject(Student::class.java)
+            val workoutIds = student?.workouts ?: return emptyList()
+            val workouts = mutableListOf<Workout>()
+            for(workoutId in workoutIds){
+                val workoutDoc = workoutsCollection.document(workoutId).get().await()
+                if(workoutDoc.exists()){
+                    val workout = workoutDoc.toObject(Workout::class.java)
+                    if(workout != null){
+                        workouts.add(workout)
+                    } else{
+                        Log.e("WorkoutRepository", "Treino não encontrado: $workoutId")
+                    }
+                }
+                }
+            workouts
+            } catch (e: Exception){
+                Log.e("WorkoutRepository", "Erro ao obter os treinos", e)
+            emptyList()
+        }
+    }
+    suspend fun updateWorkout(workoutId:String, name: String, description: String, exercises: List<String>){
+        try{
+            val workoutMap = mapOf(
+                "name" to name,
+                "description" to description,
+                "exercises" to exercises
+            )
+            workoutsCollection.document(workoutId).update(workoutMap).await()
+        } catch (e: Exception){
+            Log.e("WorkoutRepository", "Erro ao atualizar o treino", e)
 
-
-    suspend fun getWorkouts(coachId: String): List<Workout>{
+        }
+    }
+    suspend fun deleteWorkout(workoutId: String) {
+        val user = auth.currentUser ?: return
+        try {
+            workoutsCollection.document(workoutId).delete().await()
+            data.collection("students").document(user.uid)
+                .update("workouts", FieldValue.arrayRemove(workoutId))
+                .await()
+            Log.d("WorkoutRepository", "Treino deletado com sucesso")
+        } catch (e: Exception) {
+            Log.e("WorkoutRepository", "Erro ao deletar o treino", e)
+        }
+    }
+    suspend fun getWorkoutsByCoach(coachId: String): List<Workout>{
         return try {
             data.collection("workouts")
                 .get()
@@ -69,7 +104,7 @@ class WorkoutRepository {
                         description = doc.getString("description") ?: "",
                         coachId = doc.getString("coachId") ?: "",
                         studentId = doc.getString("studentId") ?: "",
-                        exercises = doc.get("exercises") as List<Exercise>
+                        exercises = doc.get("exercises") as List<String>
                     )
 
                 }
@@ -78,20 +113,30 @@ class WorkoutRepository {
             emptyList()
         }
     }
-    suspend fun getExercises(workoutId: String): Result<List<Exercise>>{
-        return try{
-            val doc = workoutsCollection.document(workoutId).get().await()
-            val workout = doc.toObject(Workout::class.java)
-            if(workout != null){
-                Result.success(workout.exercises)
-            } else{
-                Result.failure(Exception("Treino não encontrado"))
+    suspend fun getExercisesFromWorkout(workoutId: String): List<Exercise> {
+        return try {
+            val workoutDoc = workoutsCollection.document(workoutId).get().await()
+            if (!workoutDoc.exists()) return emptyList()
+            val workout = workoutDoc.toObject(Workout::class.java) ?: return emptyList()
+            val exerciseIds = workout.exercises
+
+            val exercisesCollection = data.collection("exercises")
+            val exerciseList = mutableListOf<Exercise>()
+
+            for (exerciseId in exerciseIds) {
+                val doc = exercisesCollection.document(exerciseId).get().await()
+                if (doc.exists()) {
+                    doc.toObject(Exercise::class.java)?.let { exerciseList.add(it) }
+                }
             }
 
-        } catch (e: Exception){
-            Result.failure(e)
+            exerciseList
+        } catch (e: Exception) {
+            Log.e("WorkoutRepository", "Erro ao buscar exercícios do treino", e)
+            emptyList()
         }
     }
 
-
 }
+
+
