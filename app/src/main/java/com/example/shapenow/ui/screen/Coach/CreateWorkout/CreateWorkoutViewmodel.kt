@@ -31,6 +31,8 @@ class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
     val description: StateFlow<String> = _description.asStateFlow()
     private val _coachId = MutableStateFlow("")
     val coachId: StateFlow<String> = _coachId.asStateFlow()
+    private val _studentId = MutableStateFlow("")
+    val student = _studentId.asStateFlow()
     private val _exercises = MutableStateFlow<List<Exercise>>(emptyList())
     val exercises: StateFlow<List<Exercise>> = _exercises.asStateFlow()
 
@@ -66,6 +68,9 @@ class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
     fun onDescriptionChange(description: String){
         _description.value = description
     }
+    fun onStudentIdChange(studentId: String){
+        _studentId.value = studentId
+    }
     fun createWorkout(onSuccess: () -> Unit) {
         // A validação está correta
         if (_title.value.isBlank() || _description.value.isBlank() || _addedExercises.value.isEmpty()) {
@@ -79,7 +84,7 @@ class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
                 title = _title.value,
                 description = _description.value,
                 coachId = _coachId.value, // Certifique-se que _coachId está recebendo um valor apropriado em algum momento
-                studentId = studentId,
+                studentId = _studentId.value,
                 exercises = _addedExercises.value // <<====== CORREÇÃO APLICADA AQUI!
             )
 

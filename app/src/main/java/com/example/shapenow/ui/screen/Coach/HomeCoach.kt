@@ -1,20 +1,15 @@
 package com.example.shapenow.ui.screen.Coach
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,63 +20,84 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
+import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.WorkoutItem
 import com.example.shapenow.ui.screen.rowdies
 
-
 @Composable
-fun HomeCoach(innerPadding: PaddingValues, viewModel: HomeCoachViewModel, coachId: String, onCreateExercise:()->Unit , onCreateWorkout:()->Unit,  onWorkoutClick: (workoutId: String) -> Unit){ //possivel erro em viewmodel
+fun HomeCoach(
+    innerPadding: PaddingValues,
+    viewModel: HomeCoachViewModel,
+    coachId: String,
+    onCreateExercise: () -> Unit,
+    onCreateWorkout: () -> Unit,
+    onWorkoutClick: (workoutId: String) -> Unit
+) {
     val workouts by viewModel.workouts.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadWorkouts(coachId)
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF1B1B2F)).padding(vertical = 24.dp)){
-        Column (modifier = Modifier.padding(16.dp)) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Treinos Passados",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                fontFamily = rowdies,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            workouts.forEach { workout ->
-                // Certifique-se que seu objeto workout tem uma propriedade 'id'
-                WorkoutItem(
-                    workout = workout,
-                    onClick = {
-                        // Chamar a função de callback passando o ID do workout
-                        onWorkoutClick(workout.id) // Supondo que workout.id existe
-                    },
-                    modifier = Modifier.padding(bottom = 12.dp) // Adiciona espaçamento inferior
+    // O Box é o container principal que permite a sobreposição de elementos
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1B1B2F))
+    ) {
+        // Usamos LazyColumn para a lista rolável de treinos (melhor performance).
+        // Adicionamos um padding na parte de baixo (bottom) para que o último item
+        // não fique escondido atrás da nova barra de navegação.
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item {
+                Text(
+                    text = "Treinos Passados",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    fontFamily = rowdies,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp)
                 )
             }
 
-            Button(
-                onClick = {onCreateExercise()}
-            ){
-
+            items(workouts) { workout ->
+                WorkoutItem(
+                    workout = workout,
+                    onClick = {
+                        onWorkoutClick(workout.id)
+                    }
+                )
             }
         }
-        FloatingActionButton(
-            onClick = { onCreateWorkout() },
+
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp),
-            containerColor = Color(0xFF2F0C6D)
-        ){
-            Icon(Icons.Default.Add, contentDescription = "Criar Treino", tint = Color.White)
+                .align(Alignment.BottomCenter) // Alinha na base do Box
+                .fillMaxWidth() // Ocupa toda a largura
+                .background(Color(0xFF1B1B2F).copy(alpha = 0.95f)) // Fundo para se destacar
+                .padding(  vertical = 20.dp), // Ajuste no padding
+            horizontalArrangement = Arrangement.SpaceEvenly, // Cria um espaço fixo de 16.dp ENTRE os botões
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            DefaultButton(
+                text = "Criar Exercício",
+                modifier = Modifier.weight(1f),
+                onClick = { onCreateExercise() }
+            )
+
+            DefaultButton(
+                text = "Criar Treino",
+                modifier = Modifier.weight(1f),
+                onClick = { onCreateWorkout() }
+            )
         }
     }
-
 }

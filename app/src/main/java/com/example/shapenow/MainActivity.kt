@@ -45,12 +45,7 @@ class MainActivity : ComponentActivity() {
             val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
             val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
             ShapeNowTheme {
-                NavHost(navController = navController, startDestination = "HomeScreen") {
-                    composable("HomeScreen") {
-                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                            HomeScreen(innerPadding, navController)
-                        }
-                    }
+                NavHost(navController = navController, startDestination = "LoginScreen") {
                     composable("LoginScreen") {
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             LoginScreen(
