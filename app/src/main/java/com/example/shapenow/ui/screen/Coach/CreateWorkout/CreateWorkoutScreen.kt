@@ -19,7 +19,6 @@ import com.example.shapenow.data.datasource.model.Exercise // Importe sua classe
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel // Importe seu ViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateWorkoutScreen(
     paddingValues: PaddingValues,
@@ -28,6 +27,7 @@ fun CreateWorkoutScreen(
     val viewModel: CreateWorkoutViewmodel = viewModel()
     val title by viewModel.title.collectAsState()
     val description by viewModel.description.collectAsState() // Coletar estado da descrição
+    val studentId by viewModel.student.collectAsState()
     val searchQuery by viewModel.search.collectAsState()
     val filteredExercises by viewModel.filteredExercises
     val addedExerciseIds by viewModel.addedExercises.collectAsState()
@@ -90,8 +90,15 @@ fun CreateWorkoutScreen(
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = studentId,
+                onValueChange = { viewModel.onStudentIdChange(it) },
+                label = { Text("Id do estudante") }, // Campo adicionado
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
