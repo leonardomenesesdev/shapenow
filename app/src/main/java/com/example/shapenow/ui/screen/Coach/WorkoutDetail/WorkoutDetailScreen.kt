@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -51,6 +52,8 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
                     .padding(bottom = 24.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
+            //TODO IMPLEMENTAR TELA DE EDIÇÃO DE EXERCICIO AO CLICAR EM UMA BARRA
+
             exercise.forEach { exercise ->
                 ExerciseItem(
                     exercise = exercise,
@@ -62,16 +65,15 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
             }
 
         }
-        //Botao para criar exercicio
-        //TODO DIRECIONAR PARA UMA TELA CreateExerciseScreen
+        //TODO CONFIGURAR PARA DELETAR TREINO
         FloatingActionButton(
-            onClick = { onCreateExercise() },
+            onClick = {  },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = Color(0xFF2F0C6D)
+            containerColor = Color(0xFFA52A2A)
         ){
-            Icon(Icons.Default.Add, contentDescription = "Criar Treino", tint = Color.White)
+            Icon(Icons.Default.Delete, contentDescription = "Criar Treino", tint = Color.White)
         }
         //BOTAO PARA DIRECIONAR A UMA TELA DE ASSOCIAR UM TREINO PRONTO A UM ALUNO
         //TODO DIRECIONAR PARA UMA TELA AssociateWorkoutScreen
@@ -84,7 +86,7 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
                 .width(200.dp),
             containerColor = Color(0xFF2F0C6D)
         ){
-           Text(text = "Associar a um aluno", color = Color.White, fontSize = 18.sp)
+           Text(text = "Editar Treino", color = Color.White, fontSize = 18.sp)
         }
     }
 

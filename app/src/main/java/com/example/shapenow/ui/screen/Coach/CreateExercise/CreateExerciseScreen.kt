@@ -47,8 +47,7 @@ fun CreateExerciseScreen(
         }
     }
 
-    var exerciseName by remember { mutableStateOf("") }
-    var repetitions by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.fillMaxSize()
         .background(Color(0xFF1B1B2F))
         .padding(vertical = 24.dp)){
@@ -96,6 +95,36 @@ fun CreateExerciseScreen(
                 value = viewModel.repetitions.value,
                 onValueChange = viewModel::onRepetitionsChange,
                 label = "Repetições",
+                padding = 10
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                text = "Carga",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
+            )
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.weight.value,
+                onValueChange = viewModel::onWeightChange,
+                label = "Carga",
+                padding = 10
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                text = "Observação",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
+            )
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.obs.value,
+                onValueChange = viewModel::onObsChange,
+                label = "Observação",
                 padding = 10
             )
             DefaultButton(

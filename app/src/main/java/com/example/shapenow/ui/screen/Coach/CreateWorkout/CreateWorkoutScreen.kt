@@ -12,10 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shapenow.data.datasource.model.Exercise // Importe sua classe Exercise
+import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel // Importe seu ViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -70,8 +72,18 @@ fun CreateWorkoutScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Criar Treino",
+                fontWeight = FontWeight.Bold,
+                fontFamily = rowdies,
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -96,9 +108,16 @@ fun CreateWorkoutScreen(
                 onValueChange = { viewModel.onStudentIdChange(it) },
                 label = { Text("Id do estudante") }, // Campo adicionado
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 3
             )
             Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Adicionar Exercícios",
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -111,13 +130,6 @@ fun CreateWorkoutScreen(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { /* TODO: Implementar lógica de filtros se necessário */ },
-                    contentPadding = PaddingValues(horizontal = 12.dp)
-                ) {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Filtros")
-                }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -171,12 +183,20 @@ fun ExerciseListItem(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(exercise.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            exercise.repetitions.let{
+                Text(
+                    "• ${exercise.repetitions}", // Usando o campo 'repetitions'
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             exercise.obs?.let {
-                if (it.isBlank()) {
+                if (!it.isBlank()) {
                     Text(
                         "• ${exercise.obs}", // Usando o campo 'obs'
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = Color.Black
                     )
                 }
             }
