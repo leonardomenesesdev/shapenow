@@ -27,6 +27,7 @@ import com.example.shapenow.viewmodel.LoginViewModel
 import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
+import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         is Student -> {
-                                            navController.navigate("HomeScreen")
+                                            navController.navigate("HomeAluno/${user.uid}")
                                         }
 
                                         else -> {
@@ -127,17 +128,28 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable(("CreateExerciseScreen")) { backStackEntry ->
-                        Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             CreateExerciseScreen(
                                 innerPadding = innerPadding,
-                                onCreate={(navController.popBackStack())}
+                                onCreate = { (navController.popBackStack()) }
                             )
                         }
+                    }
 
+                        //TELAS DE ALUNOS
+                        composable ("HomeAluno/{studentId}") { backStackEntry ->
+                            val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                HomeAluno(
+                                    innerPadding = innerPadding,
+                                    navController = navController,
+                                    studentId = studentId
+                                )
+                            }
+                        }
 
                     }
                 }
             }
         }
-    }
 }

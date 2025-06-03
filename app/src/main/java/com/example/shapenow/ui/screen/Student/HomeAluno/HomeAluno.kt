@@ -1,5 +1,6 @@
 package com.example.shapenow.ui.screen.Student.HomeAluno
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,18 +20,26 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 
 @Composable
-fun HomeAluno(innerPadding: PaddingValues, navController: NavController) {
+fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
     val backgroundColor = Color(0xFF1B1B2F)
     val headerColor = Color(0xFF2F0C6D)
     val cardColor = Color(0xFF512DA8)
     val textColor = Color.White
     val highlightColor = Color.White
-
+    val viewmodel: HomeAlunoViewmodel = viewModel()
+    val workouts by viewmodel.workouts.collectAsState()
+    val user by viewmodel.user.collectAsState()
+    LaunchedEffect(Unit) {
+        viewmodel.loadWorkouts(studentId)
+        Log.d("HomeAluno", "Chamando loadUser com studentId: $studentId")
+        viewmodel.loadUser(studentId)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +67,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController) {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "Bem-vindo, user!",
+                    text = "Bem-vindo, ${user?.name}!",
                     color = textColor,
                     style = MaterialTheme.typography.headlineSmall
                 )
@@ -68,7 +77,6 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Lista de treinos
-        val workouts = listOf("Peito e Tríceps", "Costas e Bíceps", "Pernas", "Ombro e Abdômen")
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -76,7 +84,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController) {
         ) {
             items(workouts) { treino ->
                 WorkoutCard(
-                    title = treino,
+                    title = treino.title,
                     cardColor = cardColor,
                     textColor = textColor,
                     highlightColor = highlightColor
@@ -111,5 +119,5 @@ fun WorkoutCard(title: String, cardColor: Color, textColor: Color, highlightColo
 @Composable
 fun WorkoutScreenPreview() {
     val navController = rememberNavController()
-    HomeAluno(PaddingValues(0.dp), navController)
+    HomeAluno(PaddingValues(0.dp), navController, studentId = "YryaeYWkghYyCEQNIP5J5ojzWo52")
 }
