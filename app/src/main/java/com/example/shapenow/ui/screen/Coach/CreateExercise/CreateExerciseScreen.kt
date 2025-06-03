@@ -33,6 +33,8 @@ import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 fun CreateExerciseScreen(
@@ -49,7 +51,7 @@ fun CreateExerciseScreen(
 
 
     Box(modifier = Modifier.fillMaxSize()
-        .background(Color(0xFF1B1B2F))
+        .background(backgColor)
         .padding(vertical = 24.dp)){
         Column(
             modifier = Modifier
@@ -64,13 +66,13 @@ fun CreateExerciseScreen(
                 fontFamily = rowdies,
                 fontSize = 32.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = textColor1
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
                 text = "Nome do exercício",
-                color = Color.White,
+                color = textColor1,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
