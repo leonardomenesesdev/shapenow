@@ -36,8 +36,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-
-            // ViewModels criados uma vez e passados para as telas
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
@@ -121,8 +119,8 @@ class MainActivity : ComponentActivity() {
                                 innerPadding = innerPadding,
                                 viewModel = workoutDetailViewmodel,
                                 workoutId = workoutId,
-                                onCreateExercise = {
-                                    navController.navigate("CreateExerciseScreen")
+                                onNavigateBack = {
+                                    navController.navigate("HomeCoach/{coachId}")
                                 }
 
                             )
