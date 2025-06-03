@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,14 +30,33 @@ import com.example.shapenow.ui.component.ExerciseItem
 import com.example.shapenow.ui.screen.rowdies
 
 @Composable
-fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailViewmodel, workoutId: String, onCreateExercise:()->Unit){
+fun WorkoutDetailScreen(
+    innerPadding: PaddingValues,
+    viewModel: WorkoutDetailViewmodel,
+    workoutId: String,
+    onNavigateBack: () -> Unit
+) {
     val exercise by viewModel.exercises.collectAsState()
+    val isWorkoutDeleted by viewModel.workoutDeleted.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.loadExercises(workoutId = workoutId)
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF1B1B2F)).padding(vertical = 24.dp)){
-        Column (modifier = Modifier.padding(16.dp)) {
+    LaunchedEffect(isWorkoutDeleted) {
+        if (isWorkoutDeleted) {
+            onNavigateBack()
+            viewModel.onDeletionHandled()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1B1B2F))
+            .padding(vertical = 24.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Exercícios",
@@ -51,6 +70,8 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
                     .padding(bottom = 24.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
+            //TODO IMPLEMENTAR TELA DE EDIÇÃO DE EXERCICIO AO CLICAR EM UMA BARRA
+
             exercise.forEach { exercise ->
                 ExerciseItem(
                     exercise = exercise,
@@ -60,20 +81,19 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
                     modifier = Modifier.padding(bottom = 12.dp) // Adiciona espaçamento inferior
                 )
             }
-
         }
-        //Botao para criar exercicio
-        //TODO DIRECIONAR PARA UMA TELA CreateExerciseScreen
+
+        // botao pra deletar o treino
         FloatingActionButton(
-            onClick = { onCreateExercise() },
+            onClick = { viewModel.deleteWorkout(workoutId) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = Color(0xFF2F0C6D)
-        ){
-            Icon(Icons.Default.Add, contentDescription = "Criar Treino", tint = Color.White)
+            containerColor = Color(0xFFA52A2A)
+        ) {
+            Icon(Icons.Default.Delete, contentDescription = "Deletar Treino", tint = Color.White)
         }
-        //BOTAO PARA DIRECIONAR A UMA TELA DE ASSOCIAR UM TREINO PRONTO A UM ALUNO
+
         //TODO DIRECIONAR PARA UMA TELA AssociateWorkoutScreen
         FloatingActionButton(
             onClick = { },
@@ -83,9 +103,8 @@ fun WorkoutDetailScreen(innerPadding: PaddingValues, viewModel: WorkoutDetailVie
                 .height(70.dp)
                 .width(200.dp),
             containerColor = Color(0xFF2F0C6D)
-        ){
-           Text(text = "Associar a um aluno", color = Color.White, fontSize = 18.sp)
+        ) {
+            Text(text = "Editar Treino", color = Color.White, fontSize = 18.sp)
         }
     }
-
 }
