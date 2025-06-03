@@ -113,6 +113,28 @@ class WorkoutRepository {
             emptyList()
         }
     }
+    suspend fun getWorkoutsByStudent(studentId: String): List<Workout>{
+        return try {
+            data.collection("workouts")
+                .whereEqualTo("studentId", studentId)
+                .get()
+                .await()
+                .map{ doc ->
+                    Workout(
+                        id=doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        coachId = doc.getString("coachId") ?: "",
+                        studentId = doc.getString("studentId") ?: "",
+                        exercises = doc.get("exercises") as List<String>
+                    )
+
+                }
+        }
+        catch (e: Exception) {
+            emptyList()
+        }
+    }
     suspend fun getExercisesFromWorkout(workoutId: String): List<Exercise> {
         return try {
             val workoutDoc = workoutsCollection.document(workoutId).get().await()
