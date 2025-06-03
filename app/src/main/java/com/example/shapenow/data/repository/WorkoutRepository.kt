@@ -135,6 +135,7 @@ class WorkoutRepository {
             emptyList()
         }
     }
+    // ... (dentro da classe WorkoutRepository)
     suspend fun getExercisesFromWorkout(workoutId: String): List<Exercise> {
         return try {
             val workoutDoc = workoutsCollection.document(workoutId).get().await()
@@ -148,7 +149,10 @@ class WorkoutRepository {
             for (exerciseId in exerciseIds) {
                 val doc = exercisesCollection.document(exerciseId).get().await()
                 if (doc.exists()) {
-                    doc.toObject(Exercise::class.java)?.let { exerciseList.add(it) }
+                    doc.toObject(Exercise::class.java)?.let { exercise ->
+                        exercise.id = doc.id
+                        exerciseList.add(exercise)
+                    }
                 }
             }
 

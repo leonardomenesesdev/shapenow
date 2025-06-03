@@ -1,7 +1,7 @@
 package com.example.shapenow.data.datasource.model
 
 data class Exercise(
-    val id: String? = "",
+    var id: String = "",
     val name: String = "",
     val weight: String? = "",
     val repetitions: String = "",
