@@ -3,6 +3,7 @@ package com.example.shapenow.ui.screen.Student.HomeAluno
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
+import com.example.shapenow.data.datasource.model.Workout
 
 @Composable
 fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
@@ -67,7 +69,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "Bem-vindo, ${user?.name}!",
+                    text = "Bem-vindo, ${user?.name ?: "..."}!",
                     color = textColor,
                     style = MaterialTheme.typography.headlineSmall
                 )
@@ -77,16 +79,16 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
         Spacer(modifier = Modifier.height(24.dp))
 
         // Lista de treinos
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
         ) {
             items(workouts) { treino ->
+                // Chamada para o WorkoutCard atualizado
                 WorkoutCard(
-                    title = treino.title,
+                    navController = navController,
+                    treino = treino,
                     cardColor = cardColor,
-                    textColor = textColor,
                     highlightColor = highlightColor
                 )
             }
@@ -95,20 +97,26 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
 }
 
 @Composable
-fun WorkoutCard(title: String, cardColor: Color, textColor: Color, highlightColor: Color) {
+fun WorkoutCard(
+    navController: NavController,
+    treino: Workout,
+    cardColor: Color,
+    highlightColor: Color
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(2.dp, RoundedCornerShape(12.dp))
             .background(cardColor, shape = RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
+            .clickable { // <-- A MÁGICA ACONTECE AQUI
+                // Navega para a tela de detalhes passando o ID do treino específico
+                navController.navigate("workout_detail/${treino.id}")
+            }
             .padding(16.dp)
-//            .clickable {
-//                navController.navigate("exercicios/$treino")
-//            }
     ) {
         Text(
-            text = title,
+            text = treino.title,
             color = highlightColor,
             style = MaterialTheme.typography.titleMedium
         )

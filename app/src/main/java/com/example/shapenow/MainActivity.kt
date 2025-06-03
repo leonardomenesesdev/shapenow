@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
@@ -28,6 +30,8 @@ import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
+// IMPORT DA SUA NOVA TELA E DAS DEPENDÊNCIAS DE NAVEGAÇÃO
+import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +49,7 @@ class MainActivity : ComponentActivity() {
             val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "LoginScreen") {
+                    // ... (código existente das rotas de Login, Register, Coach, etc.)
                     composable("LoginScreen") {
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             LoginScreen(
@@ -54,7 +59,7 @@ class MainActivity : ComponentActivity() {
                                 onLoginSucess = { user ->
                                     when (user) {
                                         is Coach -> {
-                                            navController.navigate("HomeCoach/{coachId}")
+                                            navController.navigate("HomeCoach/${user.uid}") // Corrigido para passar ID real
                                         }
 
                                         is Student -> {
@@ -94,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("CreateWorkout")
                                 },
                                 onCreateExercise = {navController.navigate("CreateExerciseScreen")},
-                                onWorkoutClick = { workoutId -> //TODO DIRECIONAR PARA WorkoutDetailScreen
+                                onWorkoutClick = { workoutId ->
                                     navController.navigate("WorkoutDetailsScreen/$workoutId")
                                 }
                             )
@@ -109,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                 },
 
 
-                            )
+                                )
                         }
                     }
                     composable("WorkoutDetailsScreen/{workoutId}") { backStackEntry ->
@@ -136,20 +141,33 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                        //TELAS DE ALUNOS
-                        composable ("HomeAluno/{studentId}") { backStackEntry ->
-                            val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                HomeAluno(
-                                    innerPadding = innerPadding,
-                                    navController = navController,
-                                    studentId = studentId
-                                )
-                            }
+                    //TELAS DE ALUNOS
+                    composable ("HomeAluno/{studentId}") { backStackEntry ->
+                        val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            HomeAluno(
+                                innerPadding = innerPadding,
+                                navController = navController,
+                                studentId = studentId
+                            )
                         }
+                    }
 
+                    // <<< ADICIONE AQUI O BLOCO QUE FALTAVA >>>
+                    composable(
+                        route = "workout_detail/{workoutId}",
+                        arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+
+                        // Chamando a sua nova tela de detalhes do treino do aluno
+                        StudentWorkoutDetailScreen(
+                            navController = navController,
+                            workoutId = workoutId
+                        )
                     }
                 }
             }
         }
+    }
 }
