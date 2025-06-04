@@ -1,7 +1,9 @@
 package com.example.shapenow.data.repository
 
+import LastWorkout
 import android.util.Log
 import com.example.shapenow.data.datasource.model.User
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -36,6 +38,23 @@ class StudentRepository {
             // Esta captura de erro vai te salvar quando as regras do Firestore bloquearem um acesso.
             Log.e(TAG, "Erro ao buscar estudante no Firestore para o ID: $studentId", e)
             null
+        }
+    }
+    // Dentro da classe StudentRepository ou UserRepository
+    suspend fun updateLastWorkout(studentId: String, workoutId: String) {
+        try {
+            val lastWorkoutData = LastWorkout(
+                workoutId = workoutId,
+                completedAt = Timestamp.now()
+            )
+            // Assumindo que sua coleção de usuários/alunos se chama "users"
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users").document(studentId)
+                .update("lastWorkout", lastWorkoutData)
+                .await()
+            Log.d("StudentRepository", "Último treino atualizado com sucesso.")
+        } catch (e: Exception) {
+            Log.e("StudentRepository", "Erro ao atualizar último treino", e)
         }
     }
 }

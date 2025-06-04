@@ -19,6 +19,9 @@ class HomeAlunoViewmodel (): ViewModel(){
     private val userRepository = StudentRepository()
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> = _user
+    // <<< NOVOS ESTADOS PARA O ÚLTIMO TREINO >>>
+    private val _lastCompletedWorkout = MutableStateFlow<Workout?>(null)
+    val lastCompletedWorkout: StateFlow<Workout?> = _lastCompletedWorkout
 
     private val _workout = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workout
@@ -27,15 +30,21 @@ class HomeAlunoViewmodel (): ViewModel(){
             _workout.value = workoutRepository.getWorkoutsByStudent(studentId)
         }
     }
-    // HomeAlunoViewmodel.kt
 
     private val TAG = "HomeAlunoViewModel" // <-- Defina uma TAG
 
-        // ...
-        fun loadUser(studentId: String) {
-            Log.d(TAG, "ViewModel chamando loadUser com studentId: $studentId")
-            viewModelScope.launch {
-                _user.value = userRepository.getStudentById(studentId)
+    fun loadUser(studentId: String) {
+        Log.d("HomeAlunoViewModel", "ViewModel chamando loadUser com studentId: $studentId")
+        viewModelScope.launch {
+            val student = userRepository.getStudentById(studentId)
+            _user.value = student
+
+            // <<< LÓGICA PARA CARREGAR OS DETALHES DO ÚLTIMO TREINO >>>
+            student?.lastWorkout?.workoutId?.let { lastWorkoutId ->
+                if (lastWorkoutId.isNotEmpty()) {
+                    _lastCompletedWorkout.value = workoutRepository.getWorkoutById(lastWorkoutId)
+                }
             }
         }
     }
+}

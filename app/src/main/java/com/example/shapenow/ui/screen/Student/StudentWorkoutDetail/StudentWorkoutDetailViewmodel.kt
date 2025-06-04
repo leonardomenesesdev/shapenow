@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.datasource.model.Workout
+import com.example.shapenow.data.repository.StudentRepository
 import com.example.shapenow.data.repository.WorkoutRepository
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +19,8 @@ class StudentWorkoutDetailViewmodel : ViewModel() {
 
     private val _workout = MutableStateFlow<Workout?>(null)
     val workout: StateFlow<Workout?> = _workout.asStateFlow()
-
+    private val studentRepository = StudentRepository() // Você pode precisar criar essa instância
+    private val auth = Firebase.auth
     private val _exercises = MutableStateFlow<List<Exercise>>(emptyList())
     val exercises: StateFlow<List<Exercise>> = _exercises.asStateFlow()
 
@@ -64,6 +68,14 @@ class StudentWorkoutDetailViewmodel : ViewModel() {
             }
         } catch (e: Exception) {
             3 // Valor padrão em caso de erro de parsing
+        }
+    }
+    fun completeWorkout(workoutId: String) {
+        viewModelScope.launch {
+            val studentId = auth.currentUser?.uid
+            if (studentId != null && workoutId.isNotEmpty()) {
+                studentRepository.updateLastWorkout(studentId, workoutId)
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shapenow.data.datasource.model.Exercise
+import com.example.shapenow.ui.component.ExerciseDetailCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +31,6 @@ fun StudentWorkoutDetailScreen(
     val exercises by viewModel.exercises.collectAsState()
     val seriesState by viewModel.seriesState.collectAsState()
 
-    // Carrega os dados quando a tela é iniciada
     LaunchedEffect(key1 = workoutId) {
         viewModel.loadWorkoutDetails(workoutId)
     }
@@ -81,9 +81,9 @@ fun StudentWorkoutDetailScreen(
 
                 Button(
                     onClick = {
-                        // TODO: Adicionar lógica para salvar o progresso do treino
-                        // Ex: Marcar o treino como concluído, salvar data, etc.
-                        navController.popBackStack() // Volta para a tela anterior
+                        viewModel.completeWorkout(workoutId)
+                        // Volta para a tela anterior
+                        navController.popBackStack()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -98,74 +98,3 @@ fun StudentWorkoutDetailScreen(
     }
 }
 
-@Composable
-fun ExerciseDetailCard(
-    exercise: Exercise,
-    seriesChecked: List<Boolean>,
-    onSeriesCheckedChange: (Int, Boolean) -> Unit,
-    cardColor: Color,
-    textColor: Color
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(12.dp))
-            .background(cardColor, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
-            .padding(16.dp)
-    ) {
-        Column {
-            Text(
-                text = exercise.name,
-                color = textColor,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Repetições: ${exercise.repetitions.substringAfter('x').trim()}", // Exibe apenas as reps "12" de "3x12"
-                color = textColor.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Carga: ${exercise.weight}",
-                color = textColor.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Descanso: ${exercise.rest}",
-                color = textColor.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Linha com os Checkboxes para cada série
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                seriesChecked.forEachIndexed { index, isChecked ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = isChecked,
-                            onCheckedChange = { newCheckedState ->
-                                onSeriesCheckedChange(index, newCheckedState)
-                            },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = Color.Green,
-                                uncheckedColor = textColor,
-                                checkmarkColor = cardColor
-                            )
-                        )
-                        Text(
-                            text = "${index + 1}ª",
-                            color = textColor,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
