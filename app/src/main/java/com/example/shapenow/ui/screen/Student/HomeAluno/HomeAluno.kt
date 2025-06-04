@@ -9,6 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+// Imports adicionados
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -26,6 +31,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
+// Corrigindo o import do modelo Student para garantir que `lastWorkout` seja acessível
+import com.example.shapenow.data.datasource.model.Student
+import com.example.shapenow.data.datasource.model.User
 import com.example.shapenow.data.datasource.model.Workout
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
@@ -36,7 +44,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
     val backgroundColor = Color(0xFF1B1B2F)
     val headerColor = Color(0xFF2F0C6D)
     val cardColor = Color(0xFF512DA8)
-    val lastWorkoutCardColor = Color(0xFF4A148C) // Um roxo mais escuro para destaque
+    val lastWorkoutCardColor = Color(0xFF4A148C)
     val textColor = Color.White
 
     val viewmodel: HomeAlunoViewmodel = viewModel()
@@ -44,7 +52,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
     val user by viewmodel.user.collectAsState()
     val lastCompletedWorkout by viewmodel.lastCompletedWorkout.collectAsState()
 
-    LaunchedEffect(studentId) { // Use studentId como key para recarregar se mudar
+    LaunchedEffect(studentId) {
         viewmodel.loadWorkouts(studentId)
         viewmodel.loadUser(studentId)
     }
@@ -63,23 +71,43 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 .shadow(4.dp, RoundedCornerShape(16.dp))
                 .background(headerColor, shape = RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
-                .padding(24.dp)
+                .padding(horizontal = 24.dp, vertical = 12.dp) // Ajuste no padding vertical
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.bg_photo),
                     contentDescription = "User",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(60.dp) // Tamanho um pouco menor para caber o botão
                         .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = "Bem-vindo, ${user?.name ?: "..."}!",
-                    color = textColor,
-                    style = MaterialTheme.typography.headlineSmall
-                )
+                // Usando um Column para o texto ocupar o espaço disponível
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Bem-vindo,",
+                        color = textColor.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = user?.name ?: "...",
+                        color = textColor,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                // Botão de Logout
+                IconButton(onClick = { viewmodel.performLogout(navController) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Sair",
+                        tint = Color.White
+                    )
+                }
             }
         }
 
@@ -87,19 +115,23 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
 
         // SEÇÃO DO ÚLTIMO TREINO FEITO
         lastCompletedWorkout?.let { lastWorkout ->
-            Text(
-                text = "Último Treino Feito",
-                style = MaterialTheme.typography.titleLarge,
-                color = textColor,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            LastWorkoutCard(
-                navController = navController,
-                lastWorkout = lastWorkout,
-                completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                cardColor = lastWorkoutCardColor
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+            // Convertendo o usuário genérico para Aluno para acessar `lastWorkout`
+            val student = user as? User
+            if (student != null) {
+                Text(
+                    text = "Último Treino Feito",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = textColor,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                LastWorkoutCard(
+                    navController = navController,
+                    lastWorkout = lastWorkout,
+                    completionDate = formatTimestamp(student.lastWorkout?.completedAt),
+                    cardColor = lastWorkoutCardColor
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
         Text(
@@ -126,6 +158,8 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
     }
 }
 
+// ... (Restante do seu código: WorkoutCard, LastWorkoutCard, formatTimestamp, Preview)
+// O restante do arquivo pode continuar igual ao que você já tem.
 @Composable
 fun WorkoutCard(
     navController: NavController,

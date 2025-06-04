@@ -9,40 +9,7 @@ class AuthRepository{
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val firestore = FirebaseFirestore.getInstance()
 
-//    fun login(
-//        email: String,
-//        senha: String,
-//        onResult: (Boolean, User?, String?) -> Unit
-//    ) {
-//        auth.signInWithEmailAndPassword(email, senha)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    val uid = auth.currentUser?.uid
-//                    uid?.let {
-//                        firestore.collection("users").document(it).get()
-//                            .addOnSuccessListener { document ->
-//                                if (document.exists()) {
-//                                    val name = document.getString("name")
-//                                    val user = if (email.endsWith("@unifor.br")) {
-//                                        Coach(uid, name, email)
-//                                    } else {
-//                                        Student(uid, name, email)
-//                                    }
-//                                    onResult(true, user, null)
-//                                } else {
-//                                    onResult(false, null, "Usuário não encontrado.")
-//                                }
-//                            }
-//                            .addOnFailureListener { e ->
-//                                onResult(false, null, e.message)
-//                            }
-//                    } ?: onResult(false, null, "Erro ao obter UID.")
-//
-//                } else {
-//                    onResult(false, null, task.exception?.message)
-//                }
-//            }
-//    }
+
 fun login(
     email: String,
     senha: String,
@@ -109,6 +76,9 @@ fun login(
                     }
                 }
             }
+    fun logout() {
+        auth.signOut()
+    }
 }
 
 

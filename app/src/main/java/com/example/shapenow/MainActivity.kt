@@ -30,7 +30,6 @@ import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
-// IMPORT DA SUA NOVA TELA E DAS DEPENDÊNCIAS DE NAVEGAÇÃO
 import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
@@ -41,16 +40,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
             val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
             val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
             val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
+
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "LoginScreen") {
-                    // ... (código existente das rotas de Login, Register, Coach, etc.)
                     composable("LoginScreen") {
+                        val loginViewModel: LoginViewModel = viewModel()
+
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             LoginScreen(
                                 innerPadding = innerPadding,
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                                 onLoginSucess = { user ->
                                     when (user) {
                                         is Coach -> {
-                                            navController.navigate("HomeCoach/${user.uid}") // Corrigido para passar ID real
+                                            navController.navigate("HomeCoach/${user.uid}")
                                         }
 
                                         is Student -> {
@@ -81,7 +81,6 @@ class MainActivity : ComponentActivity() {
                                 innerPadding = innerPadding,
                                 registerViewModel = registerViewModel,
                                 onRegisterSuccess = {
-                                    // Leva para tela de login ou home após sucesso
                                     navController.navigate("LoginScreen") {}
                                 }
                             )
@@ -95,6 +94,7 @@ class MainActivity : ComponentActivity() {
                                 innerPadding = innerPadding,
                                 viewModel = homeCoachViewModel,
                                 coachId = coachId,
+                                navController = navController, // <<< ADICIONE ESTA LINHA
                                 onCreateWorkout = {
                                     navController.navigate("CreateWorkout")
                                 },
@@ -153,14 +153,12 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    // <<< ADICIONE AQUI O BLOCO QUE FALTAVA >>>
                     composable(
                         route = "workout_detail/{workoutId}",
                         arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
                     ) { backStackEntry ->
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
 
-                        // Chamando a sua nova tela de detalhes do treino do aluno
                         StudentWorkoutDetailScreen(
                             navController = navController,
                             workoutId = workoutId

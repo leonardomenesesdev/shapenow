@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.shapenow.data.datasource.model.User
 import com.example.shapenow.data.datasource.model.Workout
 import com.example.shapenow.data.repository.AuthRepository
@@ -22,9 +23,10 @@ class HomeAlunoViewmodel (): ViewModel(){
     // <<< NOVOS ESTADOS PARA O ÚLTIMO TREINO >>>
     private val _lastCompletedWorkout = MutableStateFlow<Workout?>(null)
     val lastCompletedWorkout: StateFlow<Workout?> = _lastCompletedWorkout
-
     private val _workout = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workout
+    private val authRepository = AuthRepository()
+
     fun loadWorkouts(studentId: String){
         viewModelScope.launch {
             _workout.value = workoutRepository.getWorkoutsByStudent(studentId)
@@ -45,6 +47,16 @@ class HomeAlunoViewmodel (): ViewModel(){
                     _lastCompletedWorkout.value = workoutRepository.getWorkoutById(lastWorkoutId)
                 }
             }
+        }
+    }
+    fun performLogout(navController: NavController) {
+        authRepository.logout()
+        // Navega para a tela de login e limpa todas as telas anteriores da pilha
+        navController.navigate("LoginScreen") {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
         }
     }
 }
