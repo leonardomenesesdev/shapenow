@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,22 +27,28 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.data.datasource.model.Workout
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
     val backgroundColor = Color(0xFF1B1B2F)
     val headerColor = Color(0xFF2F0C6D)
     val cardColor = Color(0xFF512DA8)
+    val lastWorkoutCardColor = Color(0xFF4A148C) // Um roxo mais escuro para destaque
     val textColor = Color.White
-    val highlightColor = Color.White
+
     val viewmodel: HomeAlunoViewmodel = viewModel()
     val workouts by viewmodel.workouts.collectAsState()
     val user by viewmodel.user.collectAsState()
-    LaunchedEffect(Unit) {
+    val lastCompletedWorkout by viewmodel.lastCompletedWorkout.collectAsState()
+
+    LaunchedEffect(studentId) { // Use studentId como key para recarregar se mudar
         viewmodel.loadWorkouts(studentId)
-        Log.d("HomeAluno", "Chamando loadUser com studentId: $studentId")
         viewmodel.loadUser(studentId)
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,18 +85,41 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // SEÇÃO DO ÚLTIMO TREINO FEITO
+        lastCompletedWorkout?.let { lastWorkout ->
+            Text(
+                text = "Último Treino Feito",
+                style = MaterialTheme.typography.titleLarge,
+                color = textColor,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            LastWorkoutCard(
+                navController = navController,
+                lastWorkout = lastWorkout,
+                completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
+                cardColor = lastWorkoutCardColor
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        Text(
+            text = "Meus Treinos",
+            style = MaterialTheme.typography.titleLarge,
+            color = textColor,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
         // Lista de treinos
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
         ) {
             items(workouts) { treino ->
-                // Chamada para o WorkoutCard atualizado
                 WorkoutCard(
                     navController = navController,
                     treino = treino,
                     cardColor = cardColor,
-                    highlightColor = highlightColor
+                    highlightColor = textColor
                 )
             }
         }
@@ -109,8 +139,7 @@ fun WorkoutCard(
             .shadow(2.dp, RoundedCornerShape(12.dp))
             .background(cardColor, shape = RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
-            .clickable { // <-- A MÁGICA ACONTECE AQUI
-                // Navega para a tela de detalhes passando o ID do treino específico
+            .clickable {
                 navController.navigate("workout_detail/${treino.id}")
             }
             .padding(16.dp)
@@ -121,6 +150,47 @@ fun WorkoutCard(
             style = MaterialTheme.typography.titleMedium
         )
     }
+}
+
+@Composable
+fun LastWorkoutCard(
+    navController: NavController,
+    lastWorkout: Workout,
+    completionDate: String,
+    cardColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(4.dp, RoundedCornerShape(12.dp))
+            .background(cardColor, shape = RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                navController.navigate("workout_detail/${lastWorkout.id}")
+            }
+            .padding(16.dp)
+    ) {
+        Column {
+            Text(
+                text = lastWorkout.title,
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Concluído em: $completionDate",
+                color = Color.White.copy(alpha = 0.8f),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+fun formatTimestamp(timestamp: Timestamp?): String {
+    if (timestamp == null) return ""
+    val sdf = SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", Locale.getDefault())
+    return sdf.format(timestamp.toDate())
 }
 
 @Preview(showBackground = true)
