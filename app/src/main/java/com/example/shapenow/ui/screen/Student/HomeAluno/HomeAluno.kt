@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.data.datasource.model.Workout
+import com.example.shapenow.ui.theme.textColor1
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,7 +91,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
             Text(
                 text = "Último Treino Feito",
                 style = MaterialTheme.typography.titleLarge,
-                color = textColor,
+                color = textColor1,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             LastWorkoutCard(
@@ -104,8 +105,9 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
 
         Text(
             text = "Meus Treinos",
+
             style = MaterialTheme.typography.titleLarge,
-            color = textColor,
+            color = textColor1,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
