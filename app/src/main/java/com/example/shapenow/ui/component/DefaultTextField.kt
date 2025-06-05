@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -17,8 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.shapenow.ui.theme.actionColor1
-import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,16 +28,14 @@ fun DefaultTextField(modifier: Modifier, label: String, value: String, onValueCh
             .padding(padding.dp),
         singleLine = true,
         visualTransformation = VisualTransformation.None,
-        colors = OutlinedTextFieldDefaults.colors(
+        colors = TextFieldDefaults.colors(
             focusedTextColor = Color.White,
             unfocusedTextColor = Color.White,
-            disabledTextColor = Color.White,
-            cursorColor = Color.White,
-            focusedBorderColor = actionColor1,
-            unfocusedBorderColor = Color.Gray,
-            focusedLabelColor = textColor1,
-            unfocusedLabelColor = textColor1
-        )
+            focusedContainerColor = Color(0xFF1E1E1E),
+            unfocusedContainerColor = Color(0xFF1E1E1E),
+
+            )
+
     )
 }
 

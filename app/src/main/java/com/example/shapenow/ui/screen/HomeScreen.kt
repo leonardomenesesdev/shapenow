@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
-import com.example.shapenow.ui.theme.buttonColor
 
 val rowdies = FontFamily(Font(R.font.rowdies_bold))
 @Composable
@@ -62,7 +61,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavHostController){
         ) {
             Box(
                 modifier = Modifier.width(40.dp).fillMaxSize()
-                    .background(buttonColor)
+                    .background(Color(0xFF2F0C6D))
             )
 
             Column(

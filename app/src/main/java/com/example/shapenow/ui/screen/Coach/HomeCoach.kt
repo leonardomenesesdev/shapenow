@@ -23,12 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shapenow.ui.component.DefaultButton
-import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.WorkoutItem
 import com.example.shapenow.ui.screen.rowdies
-import com.example.shapenow.ui.theme.backgColor
-import com.example.shapenow.ui.theme.buttonColor
-import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 fun HomeCoach(
@@ -48,15 +44,13 @@ fun HomeCoach(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgColor)
+            .background(Color(0xFF1B1B2F))
     ) {
         // Usamos LazyColumn para a lista rolável de treinos (melhor performance).
         // Adicionamos um padding na parte de baixo (bottom) para que o último item
         // não fique escondido atrás da nova barra de navegação.
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(backgColor),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -65,7 +59,7 @@ fun HomeCoach(
                     text = "Treinos Passados",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = textColor1,
+                    color = Color.White,
                     textAlign = TextAlign.Center,
                     fontFamily = rowdies,
                     modifier = Modifier
@@ -88,18 +82,18 @@ fun HomeCoach(
             modifier = Modifier
                 .align(Alignment.BottomCenter) // Alinha na base do Box
                 .fillMaxWidth() // Ocupa toda a largura
-                .background(backgColor) // Fundo para se destacar
+                .background(Color(0xFF1B1B2F).copy(alpha = 0.95f)) // Fundo para se destacar
                 .padding(  vertical = 20.dp), // Ajuste no padding
             horizontalArrangement = Arrangement.SpaceEvenly, // Cria um espaço fixo de 16.dp ENTRE os botões
             verticalAlignment = Alignment.CenterVertically
         ) {
-            DefaultButton2(
+            DefaultButton(
                 text = "Criar Exercício",
                 modifier = Modifier.weight(1f),
                 onClick = { onCreateExercise() }
             )
 
-            DefaultButton2(
+            DefaultButton(
                 text = "Criar Treino",
                 modifier = Modifier.weight(1f),
                 onClick = { onCreateWorkout() }

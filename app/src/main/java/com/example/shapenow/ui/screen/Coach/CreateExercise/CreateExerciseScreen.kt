@@ -121,6 +121,23 @@ fun CreateExerciseScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp),
+                text = "Descanso",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
+            )
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.rest.value,
+                onValueChange = viewModel::onRestChange,
+                label = "Descanso",
+                padding = 10
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 text = "Observação",
                 color = Color.White,
                 fontSize = 20.sp,
