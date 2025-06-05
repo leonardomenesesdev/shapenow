@@ -1,5 +1,6 @@
 package com.example.shapenow.ui.screen.Student.WorkoutDetail
 
+import android.graphics.Paint.Align
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,12 +14,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.ui.component.ExerciseDetailCard
+import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.buttonColor
+import com.example.shapenow.ui.theme.secondaryBlue
+import com.example.shapenow.ui.theme.textColor1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,19 +42,21 @@ fun StudentWorkoutDetailScreen(
         viewModel.loadWorkoutDetails(workoutId)
     }
 
-    val backgroundColor = Color(0xFF1B1B2F)
-    val cardColor = Color(0xFF2F0C6D)
-    val textColor = Color.White
-    val buttonColor = Color(0xFF512DA8)
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(workout?.title ?: "Carregando Treino...", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
+                title = {
+                    Text(workout?.title ?: "Carregando Treino...",
+                        color = textColor1,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = rowdies,
+                        fontSize = 32.sp,
+                        ) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = backgColor)
             )
         },
-        containerColor = backgroundColor
+        containerColor = backgColor
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -71,8 +80,8 @@ fun StudentWorkoutDetailScreen(
                             onSeriesCheckedChange = { seriesIndex, isChecked ->
                                 viewModel.onSeriesCheckedChange(exercise.id, seriesIndex, isChecked)
                             },
-                            cardColor = cardColor,
-                            textColor = textColor
+                            cardColor = secondaryBlue,
+                            textColor = textColor1
                         )
                     }
                 }
@@ -89,7 +98,7 @@ fun StudentWorkoutDetailScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                    colors = ButtonDefaults.buttonColors(buttonColor)
                 ) {
                     Text("CONCLUIR TREINO", fontWeight = FontWeight.Bold)
                 }

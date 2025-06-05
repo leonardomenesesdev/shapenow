@@ -20,13 +20,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.data.datasource.model.Workout
+import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
@@ -34,11 +39,6 @@ import java.util.*
 
 @Composable
 fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
-    val backgroundColor = Color(0xFF1B1B2F)
-    val headerColor = Color(0xFF2F0C6D)
-    val cardColor = Color(0xFF512DA8)
-    val lastWorkoutCardColor = Color(0xFF4A148C) // Um roxo mais escuro para destaque
-    val textColor = Color.White
 
     val viewmodel: HomeAlunoViewmodel = viewModel()
     val workouts by viewmodel.workouts.collectAsState()
@@ -53,7 +53,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(backgColor)
             .padding(innerPadding)
             .padding(16.dp)
     ) {
@@ -62,14 +62,14 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp, RoundedCornerShape(16.dp))
-                .background(headerColor, shape = RoundedCornerShape(16.dp))
+                .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
                 .padding(24.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.bg_photo),
-                    contentDescription = "User",
+                    painter = painterResource(id = R.drawable.icon),
+                    contentDescription = "Sua foto",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(80.dp)
@@ -78,7 +78,9 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Bem-vindo, ${user?.name ?: "..."}!",
-                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    color = textColor1,
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
@@ -98,17 +100,21 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 navController = navController,
                 lastWorkout = lastWorkout,
                 completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                cardColor = lastWorkoutCardColor
+                cardColor = secondaryBlue
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         Text(
             text = "Meus Treinos",
-
+            fontWeight = FontWeight.Bold,
+            fontFamily = rowdies,
+            fontSize = 32.sp,
+            textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge,
             color = textColor1,
             modifier = Modifier.padding(bottom = 8.dp)
+
         )
 
         // Lista de treinos
@@ -120,8 +126,8 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 WorkoutCard(
                     navController = navController,
                     treino = treino,
-                    cardColor = cardColor,
-                    highlightColor = textColor
+                    cardColor = secondaryBlue,
+                    highlightColor = textColor1
                 )
             }
         }
