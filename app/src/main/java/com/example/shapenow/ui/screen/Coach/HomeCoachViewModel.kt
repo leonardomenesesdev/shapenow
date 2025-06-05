@@ -21,7 +21,6 @@ class HomeCoachViewModel : ViewModel() {
     private val _workouts = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workouts
 
-    // <<< NOVO ESTADO PARA GUARDAR OS DADOS DO TREINADOR >>>
     private val _coach = MutableStateFlow<User?>(null)
     val coach: StateFlow<User?> = _coach
 
@@ -31,7 +30,6 @@ class HomeCoachViewModel : ViewModel() {
         }
     }
 
-    // <<< NOVA FUNÇÃO PARA CARREGAR DADOS DO TREINADOR >>>
     fun loadCoach(coachId: String) {
         viewModelScope.launch {
             // Assumindo que o método getStudentById pode buscar qualquer usuário pelo ID
@@ -39,7 +37,6 @@ class HomeCoachViewModel : ViewModel() {
         }
     }
 
-    // <<< NOVA FUNÇÃO PARA FAZER LOGOUT >>>
     fun performLogout(navController: NavController) {
         authRepository.logout()
         // Navega para a tela de login e limpa todas as telas anteriores da pilha

@@ -95,6 +95,7 @@ class WorkoutRepository {
     suspend fun getWorkoutsByCoach(coachId: String): List<Workout>{
         return try {
             data.collection("workouts")
+                .whereEqualTo("coachId", coachId)
                 .get()
                 .await()
                 .map{ doc ->
