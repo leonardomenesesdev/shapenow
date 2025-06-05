@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,6 +38,9 @@ import com.example.shapenow.ui.theme.textColor1
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 
 @Composable
 fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
@@ -83,57 +88,65 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                     color = textColor1,
                     style = MaterialTheme.typography.headlineSmall
                 )
+                IconButton(onClick = { viewmodel.performLogout(navController) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Sair",
+                        tint = Color.White,
+
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // SEÇÃO DO ÚLTIMO TREINO FEITO
-        lastCompletedWorkout?.let { lastWorkout ->
+            // SEÇÃO DO ÚLTIMO TREINO FEITO
+            lastCompletedWorkout?.let { lastWorkout ->
+                Text(
+                    text = "Último Treino Feito",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = textColor1,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                LastWorkoutCard(
+                    navController = navController,
+                    lastWorkout = lastWorkout,
+                    completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
+                    cardColor = secondaryBlue
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
             Text(
-                text = "Último Treino Feito",
+                text = "Meus Treinos",
+                fontWeight = FontWeight.Bold,
+                fontFamily = rowdies,
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
                 color = textColor1,
                 modifier = Modifier.padding(bottom = 8.dp)
+
             )
-            LastWorkoutCard(
-                navController = navController,
-                lastWorkout = lastWorkout,
-                completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                cardColor = secondaryBlue
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-        }
 
-        Text(
-            text = "Meus Treinos",
-            fontWeight = FontWeight.Bold,
-            fontFamily = rowdies,
-            fontSize = 32.sp,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            color = textColor1,
-            modifier = Modifier.padding(bottom = 8.dp)
-
-        )
-
-        // Lista de treinos
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(workouts) { treino ->
-                WorkoutCard(
-                    navController = navController,
-                    treino = treino,
-                    cardColor = secondaryBlue,
-                    highlightColor = textColor1
-                )
+            // Lista de treinos
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(workouts) { treino ->
+                    WorkoutCard(
+                        navController = navController,
+                        treino = treino,
+                        cardColor = secondaryBlue,
+                        highlightColor = textColor1
+                    )
+                }
             }
-        }
+
     }
 }
-
 @Composable
 fun WorkoutCard(
     navController: NavController,
@@ -159,7 +172,11 @@ fun WorkoutCard(
         )
     }
 }
-
+fun formatTimestamp(timestamp: Timestamp?): String {
+    if (timestamp == null) return ""
+    val sdf = SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", Locale.getDefault())
+    return sdf.format(timestamp.toDate())
+}
 @Composable
 fun LastWorkoutCard(
     navController: NavController,
@@ -194,13 +211,6 @@ fun LastWorkoutCard(
         }
     }
 }
-
-fun formatTimestamp(timestamp: Timestamp?): String {
-    if (timestamp == null) return ""
-    val sdf = SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", Locale.getDefault())
-    return sdf.format(timestamp.toDate())
-}
-
 @Preview(showBackground = true)
 @Composable
 fun WorkoutScreenPreview() {

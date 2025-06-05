@@ -260,7 +260,7 @@ fun ExerciseListItem(
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = textColor1
-                )
+            )
             exercise.repetitions.let {
                 Text(
                     "• ${exercise.repetitions}", // Usando o campo 'repetitions'

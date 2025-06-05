@@ -52,7 +52,7 @@ fun StudentWorkoutDetailScreen(
                         fontWeight = FontWeight.Bold,
                         fontFamily = rowdies,
                         fontSize = 32.sp,
-                        ) },
+                    ) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = backgColor)
             )
         },
@@ -106,4 +106,3 @@ fun StudentWorkoutDetailScreen(
         }
     }
 }
-
