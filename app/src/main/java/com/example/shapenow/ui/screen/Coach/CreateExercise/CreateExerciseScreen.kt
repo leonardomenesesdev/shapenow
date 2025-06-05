@@ -9,16 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,11 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.ui.component.DefaultButton
+import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
@@ -40,7 +32,7 @@ import com.example.shapenow.ui.theme.textColor1
 fun CreateExerciseScreen(
     innerPadding: PaddingValues,
     onCreate: () -> Unit
-){
+) {
     val viewModel: CreateExerciseViewmodel = viewModel()
     val saveSuccess by viewModel.saveSuccess
     LaunchedEffect(saveSuccess) {
@@ -50,9 +42,12 @@ fun CreateExerciseScreen(
     }
 
 
-    Box(modifier = Modifier.fillMaxSize()
-        .background(backgColor)
-        .padding(vertical = 24.dp)){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgColor)
+            .padding(vertical = 24.dp)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,8 +55,8 @@ fun CreateExerciseScreen(
             horizontalAlignment = Alignment.CenterHorizontally // <-- Centraliza horizontalmente
         ) {
 
-        Text(
-                "Adicionar Exercício",
+            Text(
+                "Criar Exercício",
                 fontWeight = FontWeight.Bold,
                 fontFamily = rowdies,
                 fontSize = 32.sp,
@@ -70,7 +65,9 @@ fun CreateExerciseScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 text = "Nome do exercício",
                 color = textColor1,
                 fontSize = 20.sp,
@@ -82,10 +79,14 @@ fun CreateExerciseScreen(
                 value = viewModel.name.value,
                 onValueChange = viewModel::onNameChange,
                 label = "Exercício",
-                padding = 10
-            )
+                padding = 10,
+
+
+                )
             Text(
-                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 text = "Repetições",
                 color = Color.White,
                 fontSize = 20.sp,
@@ -100,7 +101,9 @@ fun CreateExerciseScreen(
                 padding = 10
             )
             Text(
-                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 text = "Carga",
                 color = Color.White,
                 fontSize = 20.sp,
@@ -115,7 +118,26 @@ fun CreateExerciseScreen(
                 padding = 10
             )
             Text(
-                modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
+                text = "Descanso",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
+            )
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.rest.value,
+                onValueChange = viewModel::onRestChange,
+                label = "Descanso",
+                padding = 10
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 text = "Observação",
                 color = Color.White,
                 fontSize = 20.sp,
@@ -129,7 +151,7 @@ fun CreateExerciseScreen(
                 label = "Observação",
                 padding = 10
             )
-            DefaultButton(
+            DefaultButton2(
                 modifier = Modifier.align(Alignment.End),
                 text = "Salvar",
                 onClick = {

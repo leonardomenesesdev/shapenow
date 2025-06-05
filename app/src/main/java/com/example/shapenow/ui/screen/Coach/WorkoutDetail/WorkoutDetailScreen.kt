@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shapenow.ui.component.ExerciseItem
 import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.buttonColor
 
 @Composable
 fun WorkoutDetailScreen(
@@ -53,7 +55,7 @@ fun WorkoutDetailScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1B1B2F))
+            .background(backgColor)
             .padding(vertical = 24.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -102,7 +104,7 @@ fun WorkoutDetailScreen(
                 .padding(vertical = 10.dp)
                 .height(70.dp)
                 .width(200.dp),
-            containerColor = Color(0xFF2F0C6D)
+            containerColor = buttonColor
         ) {
             Text(text = "Editar Treino", color = Color.White, fontSize = 18.sp)
         }

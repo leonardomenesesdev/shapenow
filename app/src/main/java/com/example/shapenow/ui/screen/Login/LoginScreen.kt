@@ -53,7 +53,9 @@ import com.example.shapenow.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: (user: User?) -> Unit){
     val loginState by loginViewModel.loginState.collectAsState()
+    //var email = "joao@gmail.com"
     var email by remember { mutableStateOf("") }
+    //var senha = "senha123"
     var senha by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf<String?>(null) }
     Box(modifier = Modifier.fillMaxSize()){
@@ -119,7 +121,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
                         text = "Insira seu email",
                         color = Color.White,
                         fontSize = 20.sp,
@@ -129,7 +131,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     DefaultTextField(modifier = Modifier, label = "Email", value = email, onValueChange = {email = it}, padding = 10)
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 30.dp),
+                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
                         text = "Senha",
                         color = Color.White,
                         fontSize = 20.sp,
@@ -146,7 +148,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                                 // Ação ao clicar (exemplo: navegar para a tela de recuperação de senha)
                             }
                             .fillMaxWidth()
-                            .padding(top = 10.dp, start = 30.dp)
+                            .padding(top = 10.dp, start = 10.dp)
                         ,
                         textAlign = TextAlign.Start
                     )
@@ -160,7 +162,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                                 navController.navigate("RegisterScreen")
                             }
                             .fillMaxWidth()
-                            .padding(top = 10.dp, start = 30.dp)
+                            .padding(top = 10.dp, start = 10.dp)
                         ,
                         textAlign = TextAlign.Start
                     )
