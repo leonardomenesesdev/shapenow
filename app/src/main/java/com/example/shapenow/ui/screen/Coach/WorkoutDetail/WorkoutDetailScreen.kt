@@ -38,12 +38,11 @@ fun WorkoutDetailScreen(
     workoutId: String,
     onNavigateBack: () -> Unit
 ) {
-    val exercise by viewModel.exercises.collectAsState()
-    val isWorkoutDeleted by viewModel.workoutDeleted.collectAsState()
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(workoutId) {
         viewModel.loadExercises(workoutId = workoutId)
     }
+    val exercise by viewModel.exercises.collectAsState() // Renomeado para 'exercises'
+    val isWorkoutDeleted by viewModel.workoutDeleted.collectAsState()
 
     LaunchedEffect(isWorkoutDeleted) {
         if (isWorkoutDeleted) {
@@ -51,6 +50,7 @@ fun WorkoutDetailScreen(
             viewModel.onDeletionHandled()
         }
     }
+
 
     Box(
         modifier = Modifier

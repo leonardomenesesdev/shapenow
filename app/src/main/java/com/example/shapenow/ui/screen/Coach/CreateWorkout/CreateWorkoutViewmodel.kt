@@ -12,7 +12,9 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.datasource.model.Workout
 import com.example.shapenow.data.repository.ExerciseRepository
+import com.example.shapenow.data.repository.StudentRepository // Importe seu StudentRepository
 import com.example.shapenow.data.repository.WorkoutRepository
+import com.google.firebase.auth.FirebaseAuth // Para obter o coachId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,109 +24,147 @@ import java.util.UUID
 class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
     private val workoutRepository = WorkoutRepository()
     private val exerciseRepository = ExerciseRepository()
-    private val studentId: String = savedStateHandle.get<String>("studentId") ?: ""
+    private val studentRepository = StudentRepository() // Instancie o StudentRepository
+
+    // private val studentIdFromNav: String = savedStateHandle.get<String>("studentId") ?: "" // Pode não ser mais usado
+
     private var _status = MutableStateFlow("")
     val status: StateFlow<String> = _status.asStateFlow()
+
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title.asStateFlow()
+
     private val _description = MutableStateFlow("")
     val description: StateFlow<String> = _description.asStateFlow()
-    private val _coachId = MutableStateFlow("")
+
+    // Obter o ID do coach logado
+    private val _coachId = MutableStateFlow(FirebaseAuth.getInstance().currentUser?.uid ?: "")
     val coachId: StateFlow<String> = _coachId.asStateFlow()
-    private val _studentId = MutableStateFlow("")
-    val student = _studentId.asStateFlow()
-    private val _exercises = MutableStateFlow<List<Exercise>>(emptyList())
+
+    // MUDANÇA: Agora vamos guardar o email do aluno
+    private val _studentEmail = MutableStateFlow("")
+    val studentEmail: StateFlow<String> = _studentEmail.asStateFlow()
+
+    private val _exercises = MutableStateFlow<List<Exercise>>(emptyList()) // Não usado diretamente para salvar, mas pode ser para UI
     val exercises: StateFlow<List<Exercise>> = _exercises.asStateFlow()
 
     private val _search = MutableStateFlow("")
     val search: StateFlow<String> = _search.asStateFlow()
+
     private val _allExercises = MutableStateFlow<List<Exercise>>(emptyList())
-    private val _addedExercises = MutableStateFlow<List<String>>(emptyList())
+    private val _addedExercises = MutableStateFlow<List<String>>(emptyList()) // Lista de IDs dos exercícios adicionados
     val addedExercises: StateFlow<List<String>> = _addedExercises.asStateFlow()
+
     private val _filteredExercises = mutableStateOf<List<Exercise>>(emptyList())
     val filteredExercises: State<List<Exercise>> = _filteredExercises
+
     init{
         viewModelScope.launch {
-            val exercises = exerciseRepository.getExercises()
-            _allExercises.value = exercises
-            _filteredExercises.value = exercises
+            val exercisesList = exerciseRepository.getExercises()
+            _allExercises.value = exercisesList
+            _filteredExercises.value = exercisesList
+        }
+        if (_coachId.value.isBlank()) {
+            Log.e("CreateWorkoutVM", "Coach ID não está definido! O usuário precisa estar logado como coach.")
+            _status.value = "Erro: Identificação do treinador não encontrada. Faça login novamente."
         }
     }
-    fun filterExercises(search: String){
-        if(search.isBlank()){
-            _filteredExercises.value = _allExercises.value
-        }
-        _filteredExercises.value = _allExercises.value.filter {
-            it.name.contains(search, ignoreCase = true)
-        }
 
+    fun filterExercises(query: String){ // Renomeado para query para clareza
+        _filteredExercises.value = if(query.isBlank()){
+            _allExercises.value
+        } else {
+            _allExercises.value.filter {
+                it.name.contains(query, ignoreCase = true)
+            }
+        }
     }
-    fun onSearch(search: String){
-        _search.value = search
+
+    fun onSearch(newSearch: String){ // Renomeado para newSearch
+        _search.value = newSearch
+        filterExercises(newSearch) // Filtra ao digitar
     }
-    fun onTitleChange(title: String){
-        _title.value = title
+
+    fun onTitleChange(newTitle: String){
+        _title.value = newTitle
     }
-    fun onDescriptionChange(description: String){
-        _description.value = description
+
+    fun onDescriptionChange(newDescription: String){
+        _description.value = newDescription
     }
-    fun onStudentIdChange(studentId: String){
-        _studentId.value = studentId
+
+    // MUDANÇA: Função para atualizar o email do aluno
+    fun onStudentEmailChange(email: String){
+        _studentEmail.value = email
     }
+
     fun createWorkout(onSuccess: () -> Unit) {
-        // A validação está correta
-        if (_title.value.isBlank() || _description.value.isBlank() || _addedExercises.value.isEmpty()) {
-            _status.value = "Preencha todos os campos e adicione ao menos um exercício" // Mensagem de status um pouco mais clara
+        if (_title.value.isBlank() || _description.value.isBlank() || _addedExercises.value.isEmpty() || _studentEmail.value.isBlank()) {
+            _status.value = "Preencha: Título, Descrição, Email do Aluno e adicione ao menos um exercício."
+            return
+        }
+        if (_coachId.value.isBlank()) {
+            _status.value = "Não foi possível identificar o treinador. Por favor, tente logar novamente."
             return
         }
 
         viewModelScope.launch {
-            val workoutParaSalvar = Workout(
+            _status.value = "Procurando aluno..." // Feedback para o usuário
+            val targetStudentId = studentRepository.getStudentIdByEmail(_studentEmail.value.trim())
+
+            if (targetStudentId == null) {
+                _status.value = "Aluno com o email '${_studentEmail.value}' não encontrado ou não é um aluno."
+                Log.w("CreateWorkoutVM", "Aluno não encontrado para o email: ${_studentEmail.value}")
+                return@launch
+            }
+
+            _status.value = "Salvando treino..." // Feedback para o usuário
+            val workoutToSave = Workout(
                 id = UUID.randomUUID().toString(),
                 title = _title.value,
                 description = _description.value,
-                coachId = _coachId.value, // Certifique-se que _coachId está recebendo um valor apropriado em algum momento
-                studentId = _studentId.value,
-                exercises = _addedExercises.value // <<====== CORREÇÃO APLICADA AQUI!
+                coachId = _coachId.value,
+                studentId = targetStudentId, // Usa o ID do aluno encontrado
+                exercises = _addedExercises.value
             )
 
-            // Adicione este log para verificar o objeto antes de salvar
-            Log.d("CreateWorkoutVM", "Salvando Workout: $workoutParaSalvar")
+            Log.d("CreateWorkoutVM", "Salvando Workout: $workoutToSave")
+            val result = workoutRepository.addWorkout(workout = workoutToSave)
 
-            val result = workoutRepository.addWorkout(workout = workoutParaSalvar) // Capture o resultado (opcional)
-
-            // Tratar o resultado (opcional, mas bom para depuração)
-             if (result.isSuccess) {
-                 Log.d("CreateWorkoutVM", "Workout salvo com sucesso no repositório.")
-                 onSuccess()
-             } else {
-                 Log.e("CreateWorkoutVM", "Erro ao salvar workout: ${result.exceptionOrNull()?.message}")
-                 _status.value = "Erro ao salvar o treino: ${result.exceptionOrNull()?.message}"
-             }
-            // OU simplesmente chame onSuccess se não quiser tratar o resultado aqui:
-            onSuccess()
+            if (result.isSuccess) {
+                Log.d("CreateWorkoutVM", "Workout salvo com sucesso.")
+                _status.value = "Treino criado com sucesso!"
+                onSuccess()
+            } else {
+                val errorMsg = result.exceptionOrNull()?.message ?: "Erro desconhecido."
+                Log.e("CreateWorkoutVM", "Erro ao salvar workout: $errorMsg")
+                _status.value = "Erro ao salvar o treino: $errorMsg"
+            }
         }
     }
+
     fun addExercise(exercise: Exercise){
-        val existentExercises = _addedExercises.value
-        val newId = exercise.id
-        if(newId==null){
-            _status.value = "Erro ao adicionar exercício"
-            return
+        val existentIds = _addedExercises.value.toMutableList()
+        if (exercise.id.isNotBlank() && !existentIds.contains(exercise.id)) {
+            existentIds.add(exercise.id)
+            _addedExercises.value = existentIds
+        } else if (exercise.id.isBlank()){
+            _status.value = "Erro: Exercício sem ID não pode ser adicionado."
         }
-        if(existentExercises.contains(newId)){
-            return
-        }
-        val novaLista = existentExercises + newId
-        _addedExercises.value = novaLista
     }
+
     fun isExerciseAdded(exerciseId: String): Boolean{
         return _addedExercises.value.contains(exerciseId)
     }
+
     fun deleteExercise(exercise: Exercise){
-        val exerciseId = exercise.id
-        _addedExercises.value = _addedExercises.value.filter { it != exerciseId }
+        _addedExercises.value = _addedExercises.value.filter { it != exercise.id }
     }
+
+    fun clearStatus() {
+        _status.value = ""
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -134,5 +174,4 @@ class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
             }
         }
     }
-
 }

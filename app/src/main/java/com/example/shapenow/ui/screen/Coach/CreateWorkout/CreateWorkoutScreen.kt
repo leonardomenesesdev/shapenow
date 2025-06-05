@@ -1,12 +1,14 @@
+package com.example.shapenow.ui.screen.Coach // Ou o pacote correto da sua tela
+
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle // Ícone para adicionar
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle // Ícone para já adicionado/remover
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,26 +19,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.shapenow.data.datasource.model.Exercise // Importe sua classe Exercise
+import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.actionColor1
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.textColor1
-import com.example.shapenow.viewmodel.CreateWorkoutViewmodel // Importe seu ViewModel
+import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
-@SuppressLint("StateFlowValueCalledInComposition")
+@SuppressLint("StateFlowValueCalledInComposition") // Justificado pelo uso do filteredExercises como State
 @Composable
 fun CreateWorkoutScreen(
-    paddingValues: PaddingValues,
-    onWorkoutCreated: () -> Unit, // Callback para quando o treino for criado com sucesso
+    paddingValues: PaddingValues, // paddingValues vindo do Scaffold da MainActivity, se houver
+    onWorkoutCreated: () -> Unit,
 ) {
-    val viewModel: CreateWorkoutViewmodel = viewModel()
+    // Use a Factory para garantir a injeção correta do SavedStateHandle no ViewModel
+    val viewModel: CreateWorkoutViewmodel = viewModel(factory = CreateWorkoutViewmodel.Factory)
     val title by viewModel.title.collectAsState()
-    val description by viewModel.description.collectAsState() // Coletar estado da descrição
-    val studentId by viewModel.student.collectAsState()
+    val description by viewModel.description.collectAsState()
+    // <<< MUDANÇA: Coletar studentEmail em vez de studentId/student >>>
+    val studentEmail by viewModel.studentEmail.collectAsState()
     val searchQuery by viewModel.search.collectAsState()
-    val filteredExercises by viewModel.filteredExercises
+    val filteredExercises by viewModel.filteredExercises // Este é um State<List<Exercise>>
     val addedExerciseIds by viewModel.addedExercises.collectAsState()
     val status by viewModel.status.collectAsState()
 
@@ -48,40 +52,45 @@ fun CreateWorkoutScreen(
                 message = status,
                 duration = SnackbarDuration.Short
             )
-            // Considerar limpar o status no ViewModel após exibição
-            // viewModel.clearStatus() // Você precisaria adicionar essa função no ViewModel
+            viewModel.clearStatus() // Limpa o status no ViewModel após ser exibido
         }
     }
 
+    // O filtro agora é chamado dentro de onSearch no ViewModel,
+    // então este LaunchedEffect pode não ser estritamente necessário se onSearch sempre atualizar.
+    // Mas mantê-lo garante que o filtro seja aplicado se searchQuery mudar por outros meios.
     LaunchedEffect(searchQuery) {
         viewModel.filterExercises(searchQuery)
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }, // Adiciona o SnackbarHost aqui
+        containerColor = backgColor, // Cor de fundo do Scaffold
         bottomBar = {
             Button(
                 onClick = {
                     viewModel.createWorkout {
-                        onWorkoutCreated() // Navegar ou mostrar mensagem de sucesso
+                        onWorkoutCreated()
                     }
                 },
-                colors = ButtonDefaults.buttonColors(buttonColor),
+                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
                 Text(
-                    "Concluir",
-                    color = textColor1
+                    "Concluir Treino", // Texto mais descritivo
+                    color = textColor1,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
-    ) { innerPadding ->
+    ) { innerScaffoldPadding -> // innerScaffoldPadding do Scaffold interno
         Column(
             modifier = Modifier
-                .background(backgColor)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                // .background(backgColor) // Já definido no Scaffold containerColor
+                .padding(innerScaffoldPadding) // Usa o padding do Scaffold
+                .padding(horizontal = 16.dp) // Padding adicional para o conteúdo da Column
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -94,82 +103,73 @@ fun CreateWorkoutScreen(
                 textAlign = TextAlign.Center,
                 color = textColor1
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp)) // Aumentado o espaço
 
             OutlinedTextField(
                 value = title,
                 onValueChange = { viewModel.onTitleChange(it) },
-                label = {
-                    Text(
-                        "Título do treino",
-                        color = textColor1
-                    )
-                },
+                label = { Text("Título do treino", color = textColor1) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    disabledTextColor = Color.White,
-                    cursorColor = Color.White,
+                    unfocusedTextColor = Color.White.copy(alpha = 0.7f),
+                    disabledTextColor = Color.Gray,
+                    cursorColor = actionColor1,
                     focusedBorderColor = actionColor1,
                     unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = textColor1,
-                    unfocusedLabelColor = textColor1
+                    focusedLabelColor = actionColor1,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
                 )
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
                 value = description,
                 onValueChange = { viewModel.onDescriptionChange(it) },
-                label = {
-                    Text(
-                        "Descrição do treino",
-                        color = textColor1
-                    )
-                }, // Campo adicionado
+                label = { Text("Descrição do treino", color = textColor1) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
+                maxLines = 5,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    disabledTextColor = Color.White,
-                    cursorColor = Color.White,
+                    unfocusedTextColor = Color.White.copy(alpha = 0.7f),
+                    disabledTextColor = Color.Gray,
+                    cursorColor = actionColor1,
                     focusedBorderColor = actionColor1,
                     unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = textColor1,
-                    unfocusedLabelColor = textColor1
+                    focusedLabelColor = actionColor1,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
                 )
-
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // <<< MUDANÇA: Campo para Email do Aluno >>>
             OutlinedTextField(
-                value = studentId,
-                onValueChange = { viewModel.onStudentIdChange(it) },
+                value = studentEmail,
+                onValueChange = { viewModel.onStudentEmailChange(it) }, // Chama a função correta
                 label = {
                     Text(
-                        "Id do estudante",
+                        "Email do estudante", // Label atualizado
                         color = textColor1
                     )
-                }, // Campo adicionado
+                },
                 modifier = Modifier.fillMaxWidth(),
+                singleLine = true, // Email geralmente é uma linha
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    disabledTextColor = Color.White,
-                    cursorColor = Color.White,
+                    unfocusedTextColor = Color.White.copy(alpha = 0.7f),
+                    disabledTextColor = Color.Gray,
+                    cursorColor = actionColor1,
                     focusedBorderColor = actionColor1,
                     unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = textColor1,
-                    unfocusedLabelColor = textColor1
+                    focusedLabelColor = actionColor1,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp)) // Aumentado o espaço
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = "Adicionar Exercícios",
                 color = textColor1,
                 fontSize = 20.sp,
@@ -177,6 +177,7 @@ fun CreateWorkoutScreen(
                 fontFamily = rowdies,
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -184,47 +185,37 @@ fun CreateWorkoutScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.onSearch(it) },
-                    label = {
-                        Text(
-                            "Buscar Exercício",
-                            color = textColor1
-                        )
-
-                    },
+                    label = { Text("Buscar Exercício", color = textColor1) },
                     modifier = Modifier.weight(1f),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        disabledTextColor = Color.White,
-                        cursorColor = Color.White,
+                        unfocusedTextColor = Color.White.copy(alpha = 0.7f),
+                        disabledTextColor = Color.Gray,
+                        cursorColor = actionColor1,
                         focusedBorderColor = actionColor1,
                         unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = textColor1,
-                        unfocusedLabelColor = textColor1
+                        focusedLabelColor = actionColor1,
+                        unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
                     )
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                // O botão de busca foi removido no ViewModel, então não é mais necessário aqui
+                // Spacer(modifier = Modifier.width(8.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (filteredExercises.isEmpty()) {
-                if (searchQuery.isNotBlank()) {
-                    Text(
-                        "Nenhum exercício encontrado para \"$searchQuery\"",
-                        modifier = Modifier.padding(vertical = 16.dp),
-                        color = textColor1
-                    )
-                } else {
-                    // Nenhum texto, nenhum espaço
-                }
+            if (filteredExercises.isEmpty() && searchQuery.isNotBlank()) {
+                Text(
+                    "Nenhum exercício encontrado para \"$searchQuery\"",
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    color = textColor1.copy(alpha = 0.7f)
+                )
             }
-
 
             LazyColumn(
                 modifier = Modifier.weight(1f) // Ocupa o espaço restante
             ) {
-                items(filteredExercises, key = { exercise -> exercise.id!! }) { exercise ->
+                items(filteredExercises, key = { exercise -> exercise.id }) { exercise ->
                     ExerciseListItem(
                         exercise = exercise,
                         isAdded = addedExerciseIds.contains(exercise.id),
@@ -236,7 +227,7 @@ fun CreateWorkoutScreen(
                             }
                         }
                     )
-                    Divider()
+                    Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 0.5.dp)
                 }
             }
         }
@@ -252,38 +243,35 @@ fun ExerciseListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .clickable(onClick = onToggleExercise) // Torna a linha inteira clicável
+            .padding(vertical = 12.dp, horizontal = 8.dp), // Adiciona padding horizontal
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(exercise.name,
+            Text(
+                exercise.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = textColor1
             )
-            exercise.repetitions.let {
+            // Exibe repetições e observações se existirem
+            val details = mutableListOf<String>()
+            if (exercise.repetitions.isNotBlank()) details.add("Reps: ${exercise.repetitions}")
+            if (exercise.obs!!.isNotBlank()) details.add("Obs: ${exercise.obs}")
+
+            if (details.isNotEmpty()) {
                 Text(
-                    "• ${exercise.repetitions}", // Usando o campo 'repetitions'
-                    fontSize = 14.sp,
-                    color = textColor1,
-                    fontWeight = FontWeight.Bold
+                    text = details.joinToString(" | "),
+                    fontSize = 13.sp,
+                    color = textColor1.copy(alpha = 0.8f)
                 )
             }
-            exercise.obs?.let {
-                if (!it.isBlank()) {
-                    Text(
-                        "• ${exercise.obs}", // Usando o campo 'obs'
-                        fontSize = 14.sp,
-                        color = textColor1
-                    )
-                }
-            }
         }
-        IconButton(onClick = onToggleExercise) {
+        IconButton(onClick = onToggleExercise) { // Mantém o IconButton para feedback visual claro
             Icon(
                 imageVector = if (isAdded) Icons.Filled.CheckCircle else Icons.Filled.AddCircle,
                 contentDescription = if (isAdded) "Remover Exercício" else "Adicionar Exercício",
-                tint = if (isAdded) MaterialTheme.colorScheme.primary else textColor1
+                tint = if (isAdded) actionColor1 else textColor1.copy(alpha = 0.8f)
             )
         }
     }

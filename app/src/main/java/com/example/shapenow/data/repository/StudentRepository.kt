@@ -10,6 +10,9 @@ import kotlinx.coroutines.tasks.await
 private const val TAG = "StudentRepository"
 
 class StudentRepository {
+    private val db = FirebaseFirestore.getInstance()
+    // Certifique-se que "users" é o nome correto da sua coleção de usuários/alunos
+    private val usersCollection = db.collection("users")
     private val data = FirebaseFirestore.getInstance()
 
     suspend fun getStudentById(studentId: String): User.Student? {
@@ -55,6 +58,26 @@ class StudentRepository {
             Log.d("StudentRepository", "Último treino atualizado com sucesso.")
         } catch (e: Exception) {
             Log.e("StudentRepository", "Erro ao atualizar último treino", e)
+        }
+    }
+    suspend fun getStudentIdByEmail(email: String): String? {
+        return try {
+            val querySnapshot = usersCollection
+                .whereEqualTo("email", email.trim()) // .trim() para remover espaços extras
+                .whereEqualTo("tipo", "student") // Garante que estamos pegando um aluno
+                .limit(1) // O email deve ser único para um aluno
+                .get()
+                .await()
+
+            if (!querySnapshot.isEmpty) {
+                querySnapshot.documents[0].id // O ID do documento é o UID do usuário
+            } else {
+                Log.w("StudentRepository", "Nenhum aluno encontrado com o email: $email")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("StudentRepository", "Erro ao buscar aluno por email '$email'", e)
+            null
         }
     }
 }

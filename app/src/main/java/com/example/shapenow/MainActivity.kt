@@ -1,6 +1,5 @@
 package com.example.shapenow
 
-import CreateWorkoutScreen
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,6 +18,7 @@ import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseViewmodel
+import com.example.shapenow.ui.screen.Coach.CreateWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
 import com.example.shapenow.ui.screen.HomeScreen
@@ -42,9 +42,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
-            val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
-            val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
-            val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
+//            val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
+//            val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
 
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "LoginScreen") {
@@ -120,15 +119,19 @@ class MainActivity : ComponentActivity() {
                     composable("WorkoutDetailsScreen/{workoutId}") { backStackEntry ->
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
 
+                        // <<< MOVA A CRIAÇÃO DO workoutDetailViewmodel PARA CÁ >>>
+                        val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
+
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             WorkoutDetailScreen(
                                 innerPadding = innerPadding,
-                                viewModel = workoutDetailViewmodel,
+                                viewModel = workoutDetailViewmodel, // Passe a nova instância
                                 workoutId = workoutId,
                                 onNavigateBack = {
-                                    navController.navigate("HomeCoach/{coachId}")
+                                    // Considerar uma navegação mais segura, talvez popBackStack
+                                    // ou passar o coachId de volta para HomeCoach se necessário
+                                    navController.popBackStack()
                                 }
-
                             )
                         }
                     }
