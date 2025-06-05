@@ -11,6 +11,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -41,6 +45,8 @@ import java.util.*
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import com.example.shapenow.ui.theme.buttonColor
 
 @Composable
 fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
@@ -88,65 +94,85 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                     color = textColor1,
                     style = MaterialTheme.typography.headlineSmall
                 )
-                IconButton(onClick = { viewmodel.performLogout(navController) }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Sair",
-                        tint = Color.White,
 
-                    )
-                }
+
             }
         }
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            // SEÇÃO DO ÚLTIMO TREINO FEITO
-            lastCompletedWorkout?.let { lastWorkout ->
-                Text(
-                    text = "Último Treino Feito",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = textColor1,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                LastWorkoutCard(
-                    navController = navController,
-                    lastWorkout = lastWorkout,
-                    completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                    cardColor = secondaryBlue
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
+        // SEÇÃO DO ÚLTIMO TREINO FEITO
+        lastCompletedWorkout?.let { lastWorkout ->
             Text(
-                text = "Meus Treinos",
+                text = "Último Treino Feito",
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
                 fontFamily = rowdies,
                 fontSize = 32.sp,
-                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
                 color = textColor1,
-                modifier = Modifier.padding(bottom = 8.dp)
-
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
             )
+            LastWorkoutCard(
+                navController = navController,
+                lastWorkout = lastWorkout,
+                completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
+                cardColor = secondaryBlue
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
 
-            // Lista de treinos
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(workouts) { treino ->
-                    WorkoutCard(
-                        navController = navController,
-                        treino = treino,
-                        cardColor = secondaryBlue,
-                        highlightColor = textColor1
-                    )
-                }
+        Text(
+            text = "Meus Treinos",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            fontFamily = rowdies,
+            fontSize = 32.sp,
+            style = MaterialTheme.typography.titleLarge,
+            color = textColor1,
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .fillMaxWidth()
+
+        )
+
+        // Lista de treinos
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            items(workouts) { treino ->
+                WorkoutCard(
+                    navController = navController,
+                    treino = treino,
+                    cardColor = secondaryBlue,
+                    highlightColor = textColor1
+                )
             }
+        }
+        Button(
+            onClick = { viewmodel.performLogout(navController) },
+            shape = RoundedCornerShape(6.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA52A2A)),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally) // <-- Centraliza horizontalmente
+                .padding(top = 16.dp)
+        ) {
+            Text(
+                text = "Sair",
+                fontSize = 16.sp,
+                fontWeight = Bold,
+                color = Color.White
+            )
+        }
 
     }
 }
+
 @Composable
 fun WorkoutCard(
     navController: NavController,
@@ -172,11 +198,13 @@ fun WorkoutCard(
         )
     }
 }
+
 fun formatTimestamp(timestamp: Timestamp?): String {
     if (timestamp == null) return ""
     val sdf = SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", Locale.getDefault())
     return sdf.format(timestamp.toDate())
 }
+
 @Composable
 fun LastWorkoutCard(
     navController: NavController,
@@ -211,6 +239,7 @@ fun LastWorkoutCard(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun WorkoutScreenPreview() {
