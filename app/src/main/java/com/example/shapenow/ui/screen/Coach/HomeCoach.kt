@@ -106,13 +106,11 @@ fun HomeCoach(
 
         // Lista de Treinos
         LazyColumn(
-            // <<< MUDANÇA PRINCIPAL AQUI >>>
             modifier = Modifier
                 .weight(1f) // Faz a LazyColumn ocupar o espaço restante
                 .fillMaxWidth() // Garante que ocupe a largura
                 .background(backgColor)
                 .padding(horizontal = 16.dp), // Padding horizontal para a lista
-            // <<< Padding de contentPAdding ajustado, principalmente o bottom >>>
             contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
