@@ -32,6 +32,7 @@ import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
+import com.example.shapenow.ui.screen.Student.Profile.ProfileAlunoScreen
 import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
 import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
@@ -198,8 +199,16 @@ class MainActivity : ComponentActivity() {
                             onWorkoutUpdated = { navController.popBackStack() } // Volta após salvar
                         )
                     }
-                }
+                    composable("profile_aluno_screen") {
+                        // Não precisamos passar o studentId como argumento, pois o ViewModel
+                        // de perfil já busca o ID do usuário atualmente logado.
+                        ProfileAlunoScreen(
+                            // navController = navController // Passe se precisar de um botão de voltar manual
+                        )
+                    }
                 }
             }
         }
     }
+}
+

@@ -78,14 +78,19 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
                 .padding(24.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.icon),
-                    contentDescription = "Sua foto",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
+                IconButton(
+                    onClick = {navController.navigate("profile_aluno_screen")}
+
+                ){
+                    Image(
+                        painter = painterResource(id = R.drawable.icon),
+                        contentDescription = "Sua foto",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                    )
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Bem-vindo, ${user?.name ?: "..."}!",
