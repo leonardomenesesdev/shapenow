@@ -1,6 +1,8 @@
 package com.example.shapenow.ui.screen.Coach.WorkoutDetail
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,17 +28,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.shapenow.ui.component.ExerciseItem
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
+import com.example.shapenow.ui.theme.secondaryBlue
+import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 fun WorkoutDetailScreen(
     innerPadding: PaddingValues,
     viewModel: WorkoutDetailViewmodel,
     workoutId: String,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    navController: NavController
 ) {
     LaunchedEffect(workoutId) {
         viewModel.loadExercises(workoutId = workoutId)
@@ -75,13 +81,17 @@ fun WorkoutDetailScreen(
             //TODO IMPLEMENTAR TELA DE EDIÇÃO DE EXERCICIO AO CLICAR EM UMA BARRA
 
             exercise.forEach { exercise ->
+                Spacer(modifier = Modifier.height(16.dp))
                 ExerciseItem(
                     exercise = exercise,
                     onClick = {
-                        // Chamar a função de callback passando o ID do workout
+                        navController.navigate("edit_workout_exercise_screen/${workoutId}/${exercise.id}")
+                        Log.i("TAG", "WorkoutDetailScreen: ${exercise.id}")
                     },
-                    modifier = Modifier.padding(bottom = 12.dp) // Adiciona espaçamento inferior
-                )
+                    modifier = Modifier.padding(bottom = 12.dp), // Adiciona espaçamento inferior
+                    cardColor = secondaryBlue,
+                    textColor = textColor1
+                    )
             }
         }
 
