@@ -6,7 +6,10 @@ sealed class User (
     open val uid: String? = "",
     open val name: String? = "",
     open val email: String? = "",
-    open val tipo: String = "",
+    open val objetivo: String = "",
+    open val peso: String = "",
+    open val altura: String = "",
+    open val imc: String = "",
     var lastWorkout: LastWorkout? = null // <-- ADICIONE ESTA LINHA (nullable)
 ){
     data class Student(

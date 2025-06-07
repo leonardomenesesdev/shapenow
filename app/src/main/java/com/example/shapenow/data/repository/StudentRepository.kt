@@ -80,4 +80,18 @@ class StudentRepository {
             null
         }
     }
+    suspend fun updateStudentProfile(studentId: String, profileData: Map<String, Any>): Result<Unit> {
+        if (studentId.isBlank()) {
+            Log.e(TAG, "updateStudentProfile falhou: studentId está em branco.")
+            return Result.failure(IllegalArgumentException("Student ID cannot be blank."))
+        }
+        return try {
+            usersCollection.document(studentId).update(profileData).await()
+            Log.d(TAG, "Perfil do estudante $studentId atualizado com sucesso.")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e(TAG, "Erro ao atualizar o perfil do estudante $studentId", e)
+            Result.failure(e)
+        }
+    }
 }

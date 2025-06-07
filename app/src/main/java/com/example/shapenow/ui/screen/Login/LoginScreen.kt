@@ -16,12 +16,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +42,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +68,22 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
     //var senha = "senha123"
     var senha by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf<String?>(null) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(loginState) {
+        when (val currentState = loginState) {
+            is LoginViewModel.LoginState.Success -> {
+                currentState.user?.let { user ->
+                    onLoginSucess(user)
+                }
+            }
+            is LoginViewModel.LoginState.Error -> {
+                errorMsg = currentState.message
+            }
+            is LoginViewModel.LoginState.Idle, is LoginViewModel.LoginState.Loading -> {
+                errorMsg = null
+            }
+        }
+    }
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.bg_photo),
@@ -128,7 +154,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
-                    DefaultTextField(modifier = Modifier, label = "Email", value = email, onValueChange = {email = it}, padding = 10)
+                    DefaultTextField(modifier = Modifier.fillMaxWidth(), label = "Email", value = email, onValueChange = {email = it}, padding = 10)
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
@@ -138,19 +164,22 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
-                    DefaultTextField(modifier = Modifier, label = "Senha", value = senha, onValueChange = {senha = it}, padding = 10)
-                    Text(
-                        text = "Esqueci minha senha",
-                        color = Color(0xFF4F44D6),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .clickable {
-                                // Ação ao clicar (exemplo: navegar para a tela de recuperação de senha)
+                    DefaultTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = "Senha",
+                        value = senha,
+                        onValueChange = {senha = it},
+                        padding = 10, // Seu padding original
+                        // Passando os novos parâmetros
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = image, contentDescription = description)
                             }
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, start = 10.dp)
-                        ,
-                        textAlign = TextAlign.Start
+                        }
                     )
                     Text(
                         text = "Registrar-se",
@@ -174,18 +203,16 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                             loginViewModel.login(email, senha)}
                     )
 //
-                    when(loginState){
+                    when (loginState) {
                         is LoginViewModel.LoginState.Loading -> {
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(color = Color.White)
                         }
                         is LoginViewModel.LoginState.Error -> {
-                            errorMsg = (loginState as LoginViewModel.LoginState.Error).message
-                            Text(text = errorMsg!!, color = Color.Red)
+                            if (errorMsg != null) {
+                                Text(text = errorMsg!!, color = Color.Red, textAlign = TextAlign.Center)
+                            }
                         }
-                        is LoginViewModel.LoginState.Success ->{
-                            val user = (loginState as LoginViewModel.LoginState.Success).user
-                            onLoginSucess(user)
-                        }
+                        // O caso Success é tratado pelo LaunchedEffect, não precisa de UI aqui
                         else -> {}
                     }
                 }

@@ -66,6 +66,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation ("com.google.firebase:firebase-auth-ktx")
     implementation(libs.firebase.firestore.ktx)
+    implementation("androidx.compose.material:material-icons-extended:1.6.7") // Verifique se esta linha ou uma similar existe. A versão pode variar.
+
 
 
 }
