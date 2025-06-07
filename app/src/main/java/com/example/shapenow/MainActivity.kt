@@ -19,6 +19,7 @@ import com.example.shapenow.data.datasource.model.User.Student
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseViewmodel
 import com.example.shapenow.ui.screen.Coach.CreateWorkoutScreen
+import com.example.shapenow.ui.screen.Coach.EditWorkout.EditWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkoutExercise.EditWorkoutExerciseScreen
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
@@ -179,8 +180,7 @@ class MainActivity : ComponentActivity() {
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
                         val exerciseIdToEdit = backStackEntry.arguments?.getString("exerciseIdToEdit") ?: ""
 
-                        // Supondo que você tenha um Scaffold ou outro container aqui
-                        // Passe os parâmetros para a sua nova tela EditWorkoutExerciseScreen
+
                         EditWorkoutExerciseScreen(
                             navController = navController,
                             workoutId = workoutId,
@@ -188,8 +188,18 @@ class MainActivity : ComponentActivity() {
                             onExerciseEdited = { navController.popBackStack() } // Volta após salvar
                         )
                     }
+                    composable(
+                        route = "edit_workout_screen/{workoutId}",
+                        arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+                        EditWorkoutScreen(
+                            workoutId = workoutId,
+                            onWorkoutUpdated = { navController.popBackStack() } // Volta após salvar
+                        )
+                    }
+                }
                 }
             }
         }
     }
-}

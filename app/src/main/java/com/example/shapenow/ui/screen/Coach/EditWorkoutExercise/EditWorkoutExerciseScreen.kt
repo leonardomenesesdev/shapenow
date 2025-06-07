@@ -36,7 +36,7 @@ fun EditWorkoutExerciseScreen(
     val workoutRepository = remember { WorkoutRepository() }
 
     val viewModel: EditWorkoutExerciseViewModel = viewModel(
-        factory = EditWorkoutExerciseViewModel.Factory(
+            factory = EditWorkoutExerciseViewModel.Factory(
             exerciseRepository = exerciseRepository,
             workoutRepository = workoutRepository
         )

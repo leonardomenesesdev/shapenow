@@ -70,7 +70,7 @@ class WorkoutRepository {
     suspend fun updateWorkout(workoutId:String, name: String, description: String, exercises: List<String>){
         try{
             val workoutMap = mapOf(
-                "name" to name,
+                "title" to name,
                 "description" to description,
                 "exercises" to exercises // << A lista de IDs de exercícios é passada aqui
             )
