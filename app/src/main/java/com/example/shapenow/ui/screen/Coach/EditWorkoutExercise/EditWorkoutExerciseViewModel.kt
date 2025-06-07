@@ -1,14 +1,12 @@
 package com.example.shapenow.ui.screen.Coach.EditWorkoutExercise
 
 import android.util.Log
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.savedstate.SavedStateRegistryOwner
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.repository.ExerciseRepository
 import com.example.shapenow.data.repository.WorkoutRepository
@@ -16,10 +14,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class EditWorkoutExerciseViewModel(
-    private val savedStateHandle: SavedStateHandle, // Tornando explícito para usar
+    private val savedStateHandle: SavedStateHandle,
     private val exerciseRepository: ExerciseRepository,
     private val workoutRepository: WorkoutRepository
 ) : ViewModel() {
@@ -27,7 +24,6 @@ class EditWorkoutExerciseViewModel(
     val workoutId: String = savedStateHandle.get<String>("workoutId") ?: ""
     private val exerciseIdToEdit: String = savedStateHandle.get<String>("exerciseIdToEdit") ?: ""
 
-    // ... (resto do seu ViewModel como estava, com as correções de String? para String)
     private val _exerciseName = MutableStateFlow("")
     val exerciseName: StateFlow<String> = _exerciseName.asStateFlow()
 
@@ -78,7 +74,7 @@ class EditWorkoutExerciseViewModel(
         }
     }
 
-    private suspend fun fetchAndSetOriginalWorkoutDetails(): Boolean {
+    private suspend fun getOriginalWorkout(): Boolean {
         val workout = workoutRepository.getWorkoutById(workoutId)
         return if (workout != null) {
             originalWorkoutNameForUpdate = workout.title
@@ -98,8 +94,7 @@ class EditWorkoutExerciseViewModel(
     fun onImgChange(img: String) { _exerciseImg.value = img }
     fun onObsChange(obs: String) { _exerciseObs.value = obs }
 
-    // Em EditWorkoutExerciseViewModel.kt
-// ...
+
     fun saveEditedExercise(onSuccess: () -> Unit) {
         if (_exerciseName.value.isBlank()) {
             _statusMessage.value = "O nome do exercício não pode estar vazio."
@@ -107,13 +102,11 @@ class EditWorkoutExerciseViewModel(
         }
 
         viewModelScope.launch {
-            if (!fetchAndSetOriginalWorkoutDetails()) {
+            if (!getOriginalWorkout()) {
                 return@launch
             }
 
-            // 1. Criar objeto Exercise (SEM ID INICIAL, ou pode ser ignorado pelo addExercise)
             val exerciseDataToSave = Exercise(
-                // id = "" // O ID será gerado pelo repositório/Firestore
                 name = _exerciseName.value,
                 weight = _exerciseWeight.value,
                 repetitions = _exerciseRepetitions.value,
@@ -122,7 +115,6 @@ class EditWorkoutExerciseViewModel(
                 obs = _exerciseObs.value
             )
 
-            // 2. Adicionar novo exercício à coleção e OBTER o ID REAL
             val actualNewExerciseId = exerciseRepository.addExercise(exerciseDataToSave)
 
             if (actualNewExerciseId == null) {
@@ -144,10 +136,10 @@ class EditWorkoutExerciseViewModel(
             val originalExerciseIndex = updatedExerciseIds.indexOf(exerciseIdToEdit)
 
             if (originalExerciseIndex != -1) {
-                updatedExerciseIds[originalExerciseIndex] = actualNewExerciseId // <<< USA O ID REAL
+                updatedExerciseIds[originalExerciseIndex] = actualNewExerciseId
             } else {
                 Log.w("EditWorkoutExerciseVM", "ID do exercício original ($exerciseIdToEdit) não encontrado na lista do treino $workoutId. O novo exercício $actualNewExerciseId será adicionado ao final.")
-                updatedExerciseIds.add(actualNewExerciseId) // <<< USA O ID REAL
+                updatedExerciseIds.add(actualNewExerciseId)
             }
 
             workoutRepository.updateWorkout(
@@ -175,7 +167,6 @@ class EditWorkoutExerciseViewModel(
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                // Cria o SavedStateHandle usando as CreationExtras
                 val savedStateHandle = extras.createSavedStateHandle()
                 return EditWorkoutExerciseViewModel(
                     savedStateHandle,

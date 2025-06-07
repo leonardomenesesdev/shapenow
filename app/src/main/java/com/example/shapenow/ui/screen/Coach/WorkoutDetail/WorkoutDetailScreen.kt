@@ -78,8 +78,6 @@ fun WorkoutDetailScreen(
                     .padding(bottom = 24.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            //TODO IMPLEMENTAR TELA DE EDIÇÃO DE EXERCICIO AO CLICAR EM UMA BARRA
-
             exercise.forEach { exercise ->
                 Spacer(modifier = Modifier.height(16.dp))
                 ExerciseItem(
@@ -108,7 +106,9 @@ fun WorkoutDetailScreen(
 
         //TODO DIRECIONAR PARA UMA TELA AssociateWorkoutScreen
         FloatingActionButton(
-            onClick = { },
+            onClick = {
+                navController.navigate("edit_workout_screen/$workoutId")
+                      },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(vertical = 10.dp)
