@@ -72,12 +72,11 @@ class WorkoutRepository {
             val workoutMap = mapOf(
                 "name" to name,
                 "description" to description,
-                "exercises" to exercises
+                "exercises" to exercises // << A lista de IDs de exercícios é passada aqui
             )
-            workoutsCollection.document(workoutId).update(workoutMap).await()
+            workoutsCollection.document(workoutId).update(workoutMap).await() // << ATUALIZAÇÃO NO FIREBASE
         } catch (e: Exception){
             Log.e("WorkoutRepository", "Erro ao atualizar o treino", e)
-
         }
     }
     suspend fun deleteWorkout(workoutId: String) {
