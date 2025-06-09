@@ -94,4 +94,20 @@ class StudentRepository {
             Result.failure(e)
         }
     }
+    suspend fun getAllStudents(): List<User.Student> {
+        return try {
+            val users = usersCollection
+                .whereEqualTo("tipo", "student")
+                .get()
+                .await()
+
+            users.documents.mapNotNull { doc ->
+                val studentData = doc.toObject(User.Student::class.java)
+                studentData?.copy(uid = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Erro ao buscar todos os alunos", e)
+            emptyList() // Retorna lista vazia em caso de erro
+        }
+    }
 }
