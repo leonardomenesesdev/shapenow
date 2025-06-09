@@ -1,4 +1,4 @@
-package com.example.shapenow.ui.screen.Student.Profile
+package com.example.shapenow.ui.screen.Student.EditProfile
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.combine
 import java.text.DecimalFormat
 
 
-class ProfileAlunoViewmodel: ViewModel() {
+class EditProfileAlunoViewmodel: ViewModel() {
     private val studentRepository = StudentRepository()
     private val auth = FirebaseAuth.getInstance()
     private val _peso = MutableStateFlow("")
@@ -64,7 +64,7 @@ class ProfileAlunoViewmodel: ViewModel() {
     fun onObjetivo(objetivo: String){
         _objetivo.value = objetivo
     }
-    fun save(){
+    fun save(onSuccess: () -> Unit){
         val studentId = auth.currentUser?.uid
         if(studentId == null){
             _status.value = "Erro ao salvar o aluno"
@@ -80,6 +80,7 @@ class ProfileAlunoViewmodel: ViewModel() {
             val result = studentRepository.updateStudentProfile(studentId, profileData)
             if(result.isSuccess){
                 _status.value = "Perfil atualizado com sucesso"
+                onSuccess()
             }
             else{
                 _status.value = "Erro ao atualizar o perfil"

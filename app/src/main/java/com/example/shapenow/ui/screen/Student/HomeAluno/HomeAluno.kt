@@ -49,7 +49,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import com.example.shapenow.ui.theme.buttonColor
 
 @Composable
-fun HomeAluno(innerPadding: PaddingValues, navController: NavController, studentId: String) {
+fun HomeAluno( navController: NavController, studentId: String) {
 
     val viewmodel: HomeAlunoViewmodel = viewModel()
     val workouts by viewmodel.workouts.collectAsState()
@@ -64,10 +64,10 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgColor)
-            .padding(innerPadding)
+            .background(backgColor) //removi o innerPadding, acho q n muda nada
             .padding(16.dp)
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         // Header Box
         Box(
             modifier = Modifier
@@ -79,7 +79,7 @@ fun HomeAluno(innerPadding: PaddingValues, navController: NavController, student
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
-                    onClick = {navController.navigate("profile_aluno_screen")}
+                    onClick = {navController.navigate("ProfileScreen")}
 
                 ){
                     Image(
@@ -249,5 +249,5 @@ fun LastWorkoutCard(
 @Composable
 fun WorkoutScreenPreview() {
     val navController = rememberNavController()
-    HomeAluno(PaddingValues(0.dp), navController, studentId = "YryaeYWkghYyCEQNIP5J5ojzWo52")
+    HomeAluno(navController, studentId = "YryaeYWkghYyCEQNIP5J5ojzWo52")
 }
