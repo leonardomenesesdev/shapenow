@@ -17,13 +17,11 @@ import androidx.navigation.navArgument
 import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
-import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseViewmodel
 import com.example.shapenow.ui.screen.Coach.CreateWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkout.EditWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkoutExercise.EditWorkoutExerciseScreen
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
-import com.example.shapenow.ui.screen.HomeScreen
 import com.example.shapenow.ui.screen.Login.LoginScreen
 import com.example.shapenow.ui.screen.register.RegisterScreen
 import com.example.shapenow.ui.theme.ShapeNowTheme
@@ -32,9 +30,9 @@ import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
-import com.example.shapenow.ui.screen.Student.Profile.ProfileAlunoScreen
+import com.example.shapenow.ui.screen.Student.EditProfile.EditProfileAlunoScreen
+import com.example.shapenow.ui.screen.Student.Profile.ProfileScreen
 import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
-import com.example.shapenow.viewmodel.CreateWorkoutViewmodel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("ViewModelConstructorInComposable")
@@ -151,15 +149,11 @@ class MainActivity : ComponentActivity() {
                     //TELAS DE ALUNOS
                     composable ("HomeAluno/{studentId}") { backStackEntry ->
                         val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
-                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             HomeAluno(
-                                innerPadding = innerPadding,
                                 navController = navController,
                                 studentId = studentId
                             )
                         }
-                    }
-
                     composable(
                         route = "workout_detail/{workoutId}",
                         arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
@@ -199,16 +193,23 @@ class MainActivity : ComponentActivity() {
                             onWorkoutUpdated = { navController.popBackStack() } // Volta após salvar
                         )
                     }
-                    composable("profile_aluno_screen") {
-                        // Não precisamos passar o studentId como argumento, pois o ViewModel
-                        // de perfil já busca o ID do usuário atualmente logado.
-                        ProfileAlunoScreen(
-                            // navController = navController // Passe se precisar de um botão de voltar manual
-                        )
+                    composable("ProfileScreen") {
+                        ProfileScreen(navController = navController)
                     }
+
+                    // <<< ROTA PARA A TELA DE EDIÇÃO >>>
+                    composable("EditProfileScreen") {
+                        EditProfileAlunoScreen(
+                            navController = navController,
+                            onProfileUpdated = {
+                                // Navega para a tela de perfil e limpa a tela de edição do histórico
+                                navController.navigate("ProfileScreen") {
+                                    popUpTo("ProfileScreen") { inclusive = true }
+                                }
+                            })
                 }
             }
         }
     }
 }
-
+}
