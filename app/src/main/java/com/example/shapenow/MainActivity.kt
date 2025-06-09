@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
+import com.example.shapenow.ui.screen.Coach.AllStudents.AllStudentScreen
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
 import com.example.shapenow.ui.screen.Coach.CreateWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkout.EditWorkoutScreen
@@ -89,9 +90,7 @@ class MainActivity : ComponentActivity() {
                     composable("HomeCoach/{coachId}") { backStackEntry ->
                         val coachId = backStackEntry.arguments?.getString("coachId") ?: ""
 
-                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                             HomeCoach(
-                                innerPadding = innerPadding,
                                 viewModel = homeCoachViewModel,
                                 coachId = coachId,
                                 navController = navController, // <<< ADICIONE ESTA LINHA
@@ -103,7 +102,6 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("WorkoutDetailsScreen/$workoutId")
                                 }
                             )
-                        }
                     }
                     composable("CreateWorkout") {
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -208,6 +206,9 @@ class MainActivity : ComponentActivity() {
                                 }
                             })
                 }
+                    composable("AllStudentScreen") {
+                        AllStudentScreen()
+                    }
             }
         }
     }
