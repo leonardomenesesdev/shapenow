@@ -12,16 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ProfileAlunoScreen(
+fun EditProfileAlunoScreen(
     // navController pode ser necessário para um botão de "Voltar"
 ) {
-    val viewModel: ProfileAlunoViewmodel = viewModel()
+    val viewModel: EditProfileAlunoViewmodel = viewModel()
     val peso by viewModel.peso.collectAsState()
     val altura by viewModel.altura.collectAsState()
     val objetivo by viewModel.objetivo.collectAsState()

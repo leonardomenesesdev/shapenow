@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.combine
 import java.text.DecimalFormat
 
 
-class ProfileAlunoViewmodel: ViewModel() {
+class EditProfileAlunoViewmodel: ViewModel() {
     private val studentRepository = StudentRepository()
     private val auth = FirebaseAuth.getInstance()
     private val _peso = MutableStateFlow("")
