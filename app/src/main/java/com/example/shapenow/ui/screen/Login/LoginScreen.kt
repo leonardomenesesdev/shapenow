@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,8 +56,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.data.datasource.model.User
 import com.example.shapenow.ui.component.DefaultButton
+import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.viewmodel.LoginViewModel
 
 
@@ -98,7 +101,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
         ) {
             Box(
                 modifier = Modifier.width(40.dp).fillMaxSize()
-                    .background(Color(0xFF2F0C6D))
+                    .background(buttonColor)
             )
 
             Column(
@@ -126,7 +129,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = rowdies,
                                     fontSize = 46.sp,
-                                    color = Color(0xFF4F44D6)
+                                    color = buttonColor
                                 )
                             ) { append("NOW!") }
                         }
@@ -183,7 +186,8 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     )
                     Text(
                         text = "Registrar-se",
-                        color = Color(0xFF4F44D6),
+                        color = Color(0xFF7A7A7A),
+                        textDecoration = TextDecoration.Underline,
                         fontSize = 16.sp,
                         modifier = Modifier
                             .clickable {
@@ -195,14 +199,14 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                         ,
                         textAlign = TextAlign.Start
                     )
-                    DefaultButton(
+                    DefaultButton2(
                         modifier = Modifier.width(150.dp).height(50.dp),
                         text = "Entrar",
                         onClick = {
                             Log.i("RegisterScreen", "Botão de registrar clicado")
                             loginViewModel.login(email, senha)}
                     )
-//
+
                     when (loginState) {
                         is LoginViewModel.LoginState.Loading -> {
                             CircularProgressIndicator(color = Color.White)
