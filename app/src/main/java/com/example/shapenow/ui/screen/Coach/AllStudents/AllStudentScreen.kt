@@ -1,6 +1,7 @@
 package com.example.shapenow.ui.screen.Coach.AllStudents
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,7 +25,8 @@ import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 fun AllStudentScreen(
-    viewModel: AllStudentsViewModel = viewModel()
+    viewModel: AllStudentsViewModel = viewModel(),
+    navController: NavController
 ) {
     val searchQuery by viewModel.search.collectAsState()
     val filteredStudents by viewModel.filteredStudents.collectAsState()
@@ -66,8 +68,8 @@ fun AllStudentScreen(
             ) {
                 items(filteredStudents, key = { it.uid!! }) { student ->
                     StudentListItem(student = student) {
-                        // Ação de clique: navegar para um perfil de aluno detalhado (funcionalidade futura)
-                        // Por exemplo: navController.navigate("student_profile_details/${student.uid}")
+                        Log.i("msg", "Clicou no aluno ${student.name}")
+                        navController.navigate("StudentDetailScreen/${student.uid}")
                     }
                 }
             }

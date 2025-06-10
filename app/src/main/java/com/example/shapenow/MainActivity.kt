@@ -24,6 +24,7 @@ import com.example.shapenow.ui.screen.Coach.EditWorkout.EditWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkoutExercise.EditWorkoutExerciseScreen
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
+import com.example.shapenow.ui.screen.Coach.StudentDetail.StudentDetailScreen
 import com.example.shapenow.ui.screen.Login.LoginScreen
 import com.example.shapenow.ui.screen.register.RegisterScreen
 import com.example.shapenow.ui.theme.ShapeNowTheme
@@ -219,10 +220,18 @@ class MainActivity : ComponentActivity() {
                             })
                 }
                     composable("AllStudentScreen") {
-                        AllStudentScreen()
+                        AllStudentScreen(navController=navController)
                     }
+                    composable(
+                        route = "StudentDetailScreen/{studentId}",
+                        arguments = listOf(navArgument("studentId") { type = NavType.StringType })
+                    ) {
+                        // O studentId é passado automaticamente para o SavedStateHandle do ViewModel
+                        StudentDetailScreen(navController = navController)
+                    }
+                }
             }
         }
     }
 }
-}
+
