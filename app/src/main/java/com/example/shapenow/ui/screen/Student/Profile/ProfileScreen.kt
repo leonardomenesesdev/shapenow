@@ -1,12 +1,10 @@
 package com.example.shapenow.ui.screen.Student.Profile
 
 import ImcStatus
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,8 +43,6 @@ import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
-import com.google.rpc.context.AttributeContext
-import com.google.rpc.context.AttributeContext.Auth
 
 @Composable
 fun ProfileScreen(navController: NavController ){

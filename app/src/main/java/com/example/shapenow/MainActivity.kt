@@ -25,18 +25,18 @@ import com.example.shapenow.ui.screen.Coach.EditWorkoutExercise.EditWorkoutExerc
 import com.example.shapenow.ui.screen.Coach.HomeCoach
 import com.example.shapenow.ui.screen.Coach.HomeCoachViewModel
 import com.example.shapenow.ui.screen.Coach.StudentDetail.StudentDetailScreen
-import com.example.shapenow.ui.screen.Login.LoginScreen
-import com.example.shapenow.ui.screen.register.RegisterScreen
-import com.example.shapenow.ui.theme.ShapeNowTheme
-import com.example.shapenow.viewmodel.LoginViewModel
-import com.example.shapenow.ui.screen.register.RegisterViewModel
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailScreen
 import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
-import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
+import com.example.shapenow.ui.screen.Login.LoginScreen
 import com.example.shapenow.ui.screen.Student.EditProfile.EditProfileAlunoScreen
+import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
 import com.example.shapenow.ui.screen.Student.Profile.ProfileScreen
 import com.example.shapenow.ui.screen.Student.SetProfile.SetProfileScreen
 import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
+import com.example.shapenow.ui.screen.register.RegisterScreen
+import com.example.shapenow.ui.screen.register.RegisterViewModel
+import com.example.shapenow.ui.theme.ShapeNowTheme
+import com.example.shapenow.viewmodel.LoginViewModel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("ViewModelConstructorInComposable")

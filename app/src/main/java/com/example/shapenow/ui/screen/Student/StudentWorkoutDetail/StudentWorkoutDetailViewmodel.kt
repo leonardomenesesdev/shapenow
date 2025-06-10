@@ -55,10 +55,7 @@ class StudentWorkoutDetailViewmodel : ViewModel() {
         }
     }
 
-    /**
-     * Tenta extrair o número de séries de uma string como "3x12" ou "4x10-15".
-     * Se o formato não for reconhecido, retorna um valor padrão (3).
-     */
+
     private fun parseSeriesCount(repetitions: String): Int {
         return try {
             if (repetitions.contains("x", ignoreCase = true)) {

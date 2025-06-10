@@ -1,6 +1,5 @@
 package com.example.shapenow.ui.component
 
-// ... outros imports
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions // Importe
 import androidx.compose.material3.OutlinedTextField
