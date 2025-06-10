@@ -2,6 +2,7 @@ package com.example.shapenow
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,6 +34,7 @@ import com.example.shapenow.ui.screen.Coach.WorkoutDetail.WorkoutDetailViewmodel
 import com.example.shapenow.ui.screen.Student.HomeAluno.HomeAluno
 import com.example.shapenow.ui.screen.Student.EditProfile.EditProfileAlunoScreen
 import com.example.shapenow.ui.screen.Student.Profile.ProfileScreen
+import com.example.shapenow.ui.screen.Student.SetProfile.SetProfileScreen
 import com.example.shapenow.ui.screen.Student.WorkoutDetail.StudentWorkoutDetailScreen
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
 //            val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
 //            val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
-
+            val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "LoginScreen") {
                     composable("LoginScreen") {
@@ -64,7 +66,13 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                         is Student -> {
-                                            navController.navigate("HomeAluno/${user.uid}")
+                                            Log.i("msg", user.name)
+                                            if(user.objetivo == ""){
+                                                navController.navigate("SetProfileScreen")
+                                            }
+                                            else{
+                                                navController.navigate("HomeAluno/${user.uid}")
+                                            }
                                         }
 
                                         else -> {
@@ -194,8 +202,12 @@ class MainActivity : ComponentActivity() {
                     composable("ProfileScreen") {
                         ProfileScreen(navController = navController)
                     }
+                    composable("SetProfileScreen"){
+                        SetProfileScreen(navController = navController, onProfileUpdated = {
+                            navController.navigate("HomeAluno/${auth.currentUser?.uid}")
+                        })
+                    }
 
-                    // <<< ROTA PARA A TELA DE EDIÇÃO >>>
                     composable("EditProfileScreen") {
                         EditProfileAlunoScreen(
                             navController = navController,

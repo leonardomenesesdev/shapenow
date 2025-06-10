@@ -1,5 +1,6 @@
-package com.example.shapenow.ui.screen.Student.EditProfile
+package com.example.shapenow.ui.screen.Student.SetProfile
 
+import SetProfileViewmodel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,10 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun EditProfileAlunoScreen(
+fun SetProfileScreen(
     navController: NavController, // <<< Adicionado NavController
     onProfileUpdated: () -> Unit) {
-    val viewModel: EditProfileAlunoViewmodel = viewModel()
+    val viewModel: SetProfileViewmodel = viewModel()
     val peso by viewModel.peso.collectAsState()
     val altura by viewModel.altura.collectAsState()
     val objetivo by viewModel.objetivo.collectAsState()
@@ -87,6 +88,7 @@ fun EditProfileAlunoScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
 
+
             Spacer(modifier = Modifier.weight(1f)) // Empurra o botão para baixo
 
             Button(
@@ -100,3 +102,4 @@ fun EditProfileAlunoScreen(
         }
     }
 }
+
