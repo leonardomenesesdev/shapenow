@@ -47,8 +47,6 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val registerViewModel: RegisterViewModel = viewModel()
             val homeCoachViewModel: HomeCoachViewModel = viewModel()
-//            val createWorkoutViewModel: CreateWorkoutViewmodel = viewModel()
-//            val createExerciseViewmodel: CreateExerciseViewmodel = viewModel()
             val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
             ShapeNowTheme {
                 NavHost(navController = navController, startDestination = "LoginScreen") {
@@ -81,7 +79,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
-
                             )
                         }
                     }
@@ -102,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             HomeCoach(
                                 viewModel = homeCoachViewModel,
                                 coachId = coachId,
-                                navController = navController, // <<< ADICIONE ESTA LINHA
+                                navController = navController,
                                 onCreateWorkout = {
                                     navController.navigate("CreateWorkout")
                                 },
@@ -119,15 +116,12 @@ class MainActivity : ComponentActivity() {
                                 onWorkoutCreated = {
                                     navController.popBackStack()
                                 },
-
-
                                 )
                         }
                     }
                     composable("WorkoutDetailsScreen/{workoutId}") { backStackEntry ->
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
 
-                        // <<< MOVA A CRIAÇÃO DO workoutDetailViewmodel PARA CÁ >>>
                         val workoutDetailViewmodel: WorkoutDetailViewmodel = viewModel()
 
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -153,7 +147,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    //TELAS DE ALUNOS
                     composable ("HomeAluno/{studentId}") { backStackEntry ->
                         val studentId = backStackEntry.arguments?.getString("studentId") ?: ""
                             HomeAluno(
@@ -181,8 +174,6 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
                         val exerciseIdToEdit = backStackEntry.arguments?.getString("exerciseIdToEdit") ?: ""
-
-
                         EditWorkoutExerciseScreen(
                             navController = navController,
                             workoutId = workoutId,
@@ -208,14 +199,14 @@ class MainActivity : ComponentActivity() {
                             navController.navigate("HomeAluno/${auth.currentUser?.uid}")
                         })
                     }
-
                     composable("EditProfileScreen") {
                         EditProfileAlunoScreen(
                             navController = navController,
                             onProfileUpdated = {
-                                // Navega para a tela de perfil e limpa a tela de edição do histórico
                                 navController.navigate("ProfileScreen") {
-                                    popUpTo("ProfileScreen") { inclusive = true }
+                                    popUpTo("ProfileScreen") {
+                                        inclusive = true
+                                    }
                                 }
                             })
                 }
@@ -226,7 +217,6 @@ class MainActivity : ComponentActivity() {
                         route = "StudentDetailScreen/{studentId}",
                         arguments = listOf(navArgument("studentId") { type = NavType.StringType })
                     ) {
-                        // O studentId é passado automaticamente para o SavedStateHandle do ViewModel
                         StudentDetailScreen(navController = navController)
                     }
                 }

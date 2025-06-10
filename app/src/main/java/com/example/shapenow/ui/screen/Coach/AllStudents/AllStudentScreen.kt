@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shapenow.data.datasource.model.User
+import com.example.shapenow.ui.component.StudentListItem
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.secondaryBlue
@@ -77,26 +78,3 @@ fun AllStudentScreen(
     }
 
 
-@Composable
-fun StudentListItem(student: User.Student, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = secondaryBlue)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = student.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = textColor1
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = student.email,
-                style = MaterialTheme.typography.bodyMedium,
-                color = textColor1.copy(alpha = 0.7f)
-            )
-        }
-    }
-}

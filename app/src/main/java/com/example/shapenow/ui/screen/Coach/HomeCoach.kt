@@ -1,5 +1,6 @@
 package com.example.shapenow.ui.screen.Coach
 
+import android.R
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.shapenow.ui.component.BottomBarActionItem
+import com.example.shapenow.ui.component.StudentListItem
 import com.example.shapenow.ui.component.WorkoutItem
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
@@ -44,7 +48,8 @@ fun HomeCoach(
 ) {
     val workouts by viewModel.workouts.collectAsState()
     val coach by viewModel.coach.collectAsState()
-
+    val searchQuery by viewModel.search.collectAsState()
+    val filteredStudents by viewModel.filteredStudents.collectAsState()
     LaunchedEffect(coachId) {
         viewModel.loadWorkouts(coachId)
         viewModel.loadCoach(coachId)
@@ -53,7 +58,6 @@ fun HomeCoach(
     Scaffold(
         containerColor = backgColor,
         bottomBar = {
-            // <<< MUDANÇA: USANDO BottomAppBar PARA A BARRA DE AÇÕES >>>
             BottomAppBar(
                 containerColor = secondaryBlue,
                 contentColor = textColor1,
@@ -64,30 +68,27 @@ fun HomeCoach(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Cada ação agora é um item clicável com ícone e texto
                     BottomBarActionItem(
                         text = "Exercícios",
                         icon = Icons.Default.List,
                         onClick = onCreateExercise
                     )
+
                     BottomBarActionItem(
                         text = "Treinos",
                         icon = Icons.Default.Add,
                         onClick = onCreateWorkout
                     )
-                    BottomBarActionItem(
-                        text = "Alunos",
-                        icon = Icons.Default.People,
-                        onClick = { navController.navigate("AllStudentScreen") }
-                    )
+
                 }
             }
         }
-    ) { innerPadding -> // Padding fornecido pelo Scaffold para não sobrepor a BottomAppBar
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) // Aplica o padding do Scaffold
+                .padding(16.dp) // Aplica o padding do Scaffold
+                .padding(innerPadding)
         ) {
             // Cabeçalho (Header)
             Box(
@@ -119,40 +120,43 @@ fun HomeCoach(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Lista de Treinos
+            Text(
+                text = "Alunos Cadastrados",
+                style = MaterialTheme.typography.headlineLarge,
+                color = textColor1,
+                modifier = Modifier.padding(bottom = 16.dp),
+                fontFamily = rowdies,
+                textAlign = TextAlign.Center
+            )
+            // Barra de Busca
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { viewModel.onsearchChange(it) },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Buscar por nome...") },
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = "Ícone de busca")
+                },
+                singleLine = true
+                // Adicione suas cores personalizadas aqui se necessário
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Lista de Alunos
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                item {
-                    Text(
-                        text = "Treinos Passados",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor1,
-                        textAlign = TextAlign.Center,
-                        fontFamily = rowdies,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
-                    )
-                }
-                items(workouts) { workout ->
-                    WorkoutItem(workout = workout, onClick = { onWorkoutClick(workout.id) })
+                items(filteredStudents, key = { it.uid!! }) { student ->
+                    StudentListItem(student = student) {
+                        Log.i("msg", "Clicou no aluno ${student.name}")
+                        navController.navigate("StudentDetailScreen/${student.uid}")
+                    }
                 }
             }
         }
     }
 }
 
-// Componente auxiliar para os itens da barra de ações
-@Composable
-fun BottomBarActionItem(text: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(onClick = onClick).padding(horizontal = 8.dp)
-    ) {
-        Icon(imageVector = icon, contentDescription = text)
-        Text(text = text, fontSize = 12.sp)
-    }
-}

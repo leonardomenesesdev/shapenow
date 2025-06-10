@@ -11,15 +11,13 @@ private const val TAG = "StudentRepository"
 
 class StudentRepository {
     private val db = FirebaseFirestore.getInstance()
-    // Certifique-se que "users" é o nome correto da sua coleção de usuários/alunos
     private val usersCollection = db.collection("users")
     private val data = FirebaseFirestore.getInstance()
 
     suspend fun getStudentById(studentId: String): User.Student? {
         Log.d(TAG, "Iniciando busca pelo studentId: $studentId")
 
-        // Esta verificação é ESSENCIAL e está funcionando corretamente.
-        // Ela te protegeu de um erro mais grave no Firestore.
+
         if (studentId.isBlank()) {
             Log.w(TAG, "studentId está em branco ou nulo. Retornando null.")
             return null
@@ -43,7 +41,6 @@ class StudentRepository {
             null
         }
     }
-    // Dentro da classe StudentRepository ou UserRepository
     suspend fun updateLastWorkout(studentId: String, workoutId: String) {
         try {
             val lastWorkoutData = LastWorkout(
@@ -64,13 +61,13 @@ class StudentRepository {
         return try {
             val querySnapshot = usersCollection
                 .whereEqualTo("email", email.trim()) // .trim() para remover espaços extras
-                .whereEqualTo("tipo", "student") // Garante que estamos pegando um aluno
-                .limit(1) // O email deve ser único para um aluno
+                .whereEqualTo("tipo", "student")
+                .limit(1)
                 .get()
                 .await()
 
             if (!querySnapshot.isEmpty) {
-                querySnapshot.documents[0].id // O ID do documento é o UID do usuário
+                querySnapshot.documents[0].id
             } else {
                 Log.w("StudentRepository", "Nenhum aluno encontrado com o email: $email")
                 null
@@ -107,7 +104,7 @@ class StudentRepository {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Erro ao buscar todos os alunos", e)
-            emptyList() // Retorna lista vazia em caso de erro
+            emptyList()
         }
     }
 }

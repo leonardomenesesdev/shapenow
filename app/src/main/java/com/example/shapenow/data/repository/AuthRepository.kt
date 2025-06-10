@@ -23,16 +23,13 @@ class AuthRepository{
                         firestore.collection("users").document(it).get()
                             .addOnSuccessListener { document ->
                                 if (document.exists()) {
-                                    // Pega os dados básicos
                                     val name = document.getString("name") ?: "Sem nome"
                                     val tipo = document.getString("tipo")
 
-                                    // <<< ADICIONADO: Pega os dados do perfil >>>
                                     val objetivo = document.getString("objetivo") ?: ""
                                     val peso = document.getString("peso") ?: ""
                                     val altura = document.getString("altura") ?: ""
                                     val imc = document.getString("imc") ?: ""
-                                    // Você também poderia pegar 'lastWorkout' e 'workouts' aqui se necessário
 
                                     val user = when (tipo) {
                                         "coach" -> Coach(uid, name, email)
@@ -40,13 +37,11 @@ class AuthRepository{
                                             uid = uid,
                                             name = name,
                                             email = email,
-                                            // <<< ADICIONADO: Passa os dados do perfil para o construtor >>>
                                             objetivo = objetivo,
                                             peso = peso,
                                             altura = altura,
                                             imc = imc
-                                            // workouts = ...,
-                                            // lastWorkout = ...
+
                                         )
                                         else -> null
                                     }
@@ -54,7 +49,6 @@ class AuthRepository{
                                     if (user != null) {
                                         onResult(true, user, null)
                                     } else {
-                                        // Este erro agora só acontecerá se o campo 'tipo' estiver realmente ausente
                                         onResult(false, null, "Tipo de usuário desconhecido.")
                                     }
                                 } else {
