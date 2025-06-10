@@ -58,33 +58,17 @@ class ExerciseRepository {
             emptyList()
         }
     }
-    //ORIGINAL Q TAVA DANDO CERTO
-//    suspend fun addExercise(exercise: Exercise){
-//        try {
-//            val doc = exercisesCollection.add(exercise).await()
-//            exercisesCollection.document(doc.id).update("id", doc.id).await()
-//            Log.i("ExerciseRepository", "Exercício adicionado com sucesso - id = ${doc.id}")
-//        } catch (e: Exception){
-//            Log.i("ExerciseRepository", "Erro ao adicionar exercício - ${e.message}")
-//        }
-//    }
-    // Em ExerciseRepository.kt
-    suspend fun addExercise(exercise: Exercise): String? { // <<< MUDANÇA: Retorna String? (o ID)
+
+    suspend fun addExercise(exercise: Exercise): String? {
         return try {
-            val newExerciseDocRef = exercisesCollection.document() // Gera um ID antes de setar
-            val exerciseWithId = exercise.copy(id = newExerciseDocRef.id) // Garante que o objeto Exercise tem o ID correto
+            val newExerciseDocRef = exercisesCollection.document()
+            val exerciseWithId = exercise.copy(id = newExerciseDocRef.id)
 
-            newExerciseDocRef.set(exerciseWithId).await() // Usa set com o ID já definido
+            newExerciseDocRef.set(exerciseWithId).await()
 
-            // Não é mais necessário o update("id", doc.id) se você setar o objeto Exercise já com o id correto.
-            // No entanto, se você quiser manter a lógica de .add() e depois .update(), seria:
-            // val doc = exercisesCollection.add(exercise.copy(id = "")).await() // Adiciona sem o ID que você gerou
-            // exercisesCollection.document(doc.id).update("id", doc.id).await()
-            // Log.i("ExerciseRepository", "Exercício adicionado com sucesso - id = ${doc.id}")
-            // return doc.id
 
             Log.i("ExerciseRepository", "Exercício adicionado com sucesso - id = ${newExerciseDocRef.id}")
-            newExerciseDocRef.id // Retorna o ID gerado pelo Firestore e usado no set
+            newExerciseDocRef.id
         } catch (e: Exception) {
             Log.e("ExerciseRepository", "Erro ao adicionar exercício - ${e.message}")
             null

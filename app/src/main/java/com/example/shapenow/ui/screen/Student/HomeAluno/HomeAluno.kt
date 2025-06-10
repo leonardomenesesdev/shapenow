@@ -10,8 +10,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -44,8 +50,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import com.example.shapenow.ui.component.BottomBarActionItem
+import com.example.shapenow.ui.component.LastWorkoutCard
+import com.example.shapenow.ui.component.WorkoutCard
 import com.example.shapenow.ui.theme.buttonColor
 
 @Composable
@@ -60,56 +70,102 @@ fun HomeAluno( navController: NavController, studentId: String) {
         viewmodel.loadWorkouts(studentId)
         viewmodel.loadUser(studentId)
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgColor) //removi o innerPadding, acho q n muda nada
-            .padding(16.dp)
-    ) {
-        Spacer(modifier = Modifier.height(10.dp))
-        // Header Box
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(4.dp, RoundedCornerShape(16.dp))
-                .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .padding(24.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = {navController.navigate("ProfileScreen")}
-
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.icon),
-                        contentDescription = "Sua foto",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape)
+    Scaffold (
+        containerColor = backgColor,
+        bottomBar = {
+            BottomAppBar(
+                containerColor = secondaryBlue,
+                contentColor = textColor1,
+                tonalElevation = 8.dp
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BottomBarActionItem(
+                        text = "Início",
+                        icon = Icons.Default.Home,
+                        onClick = {}
                     )
+
+                    BottomBarActionItem(
+                        text = "Perfil",
+                        icon = Icons.Default.AssignmentInd,
+                        onClick = {navController.navigate("ProfileScreen")}
+                    )
+
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = "Bem-vindo, ${user?.name ?: "..."}!",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    color = textColor1,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-
             }
         }
+    ){innerPadding->
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgColor) //removi o innerPadding, acho q n muda nada
+                .padding(16.dp)
+                .padding(innerPadding)
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            // Header Box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(4.dp, RoundedCornerShape(16.dp))
+                    .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Bem-vindo, ${user?.name ?: "Treinador"}!",
+                            color = textColor1,
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                    IconButton(onClick = { viewmodel.performLogout(navController) }) {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "Sair",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
 
-        // SEÇÃO DO ÚLTIMO TREINO FEITO
-        lastCompletedWorkout?.let { lastWorkout ->
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // SEÇÃO DO ÚLTIMO TREINO FEITO
+            lastCompletedWorkout?.let { lastWorkout ->
+                Text(
+                    text = "Último Treino Feito",
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    fontFamily = rowdies,
+                    fontSize = 32.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = textColor1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+                LastWorkoutCard(
+                    navController = navController,
+                    lastWorkout = lastWorkout,
+                    completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
+                    cardColor = secondaryBlue
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
             Text(
-                text = "Último Treino Feito",
+                text = "Meus Treinos",
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontFamily = rowdies,
@@ -117,92 +173,34 @@ fun HomeAluno( navController: NavController, studentId: String) {
                 style = MaterialTheme.typography.titleLarge,
                 color = textColor1,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(bottom = 8.dp)
+                    .fillMaxWidth()
+
             )
-            LastWorkoutCard(
-                navController = navController,
-                lastWorkout = lastWorkout,
-                completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                cardColor = secondaryBlue
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-        }
 
-        Text(
-            text = "Meus Treinos",
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            fontFamily = rowdies,
-            fontSize = 32.sp,
-            style = MaterialTheme.typography.titleLarge,
-            color = textColor1,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .fillMaxWidth()
-
-        )
-
-        // Lista de treinos
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            items(workouts) { treino ->
-                WorkoutCard(
-                    navController = navController,
-                    treino = treino,
-                    cardColor = secondaryBlue,
-                    highlightColor = textColor1
-                )
+            // Lista de treinos
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                items(workouts) { treino ->
+                    WorkoutCard(
+                        navController = navController,
+                        treino = treino,
+                        cardColor = secondaryBlue,
+                        highlightColor = textColor1
+                    )
+                }
             }
-        }
-        Button(
-            onClick = { viewmodel.performLogout(navController) },
-            shape = RoundedCornerShape(6.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA52A2A)),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally) // <-- Centraliza horizontalmente
-                .padding(top = 16.dp)
-        ) {
-            Text(
-                text = "Sair",
-                fontSize = 16.sp,
-                fontWeight = Bold,
-                color = Color.White
-            )
-        }
 
+
+        }
     }
+
 }
 
-@Composable
-fun WorkoutCard(
-    navController: NavController,
-    treino: Workout,
-    cardColor: Color,
-    highlightColor: Color
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(2.dp, RoundedCornerShape(12.dp))
-            .background(cardColor, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                navController.navigate("workout_detail/${treino.id}")
-            }
-            .padding(16.dp)
-    ) {
-        Text(
-            text = treino.title,
-            color = highlightColor,
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
 
 fun formatTimestamp(timestamp: Timestamp?): String {
     if (timestamp == null) return ""
@@ -210,44 +208,4 @@ fun formatTimestamp(timestamp: Timestamp?): String {
     return sdf.format(timestamp.toDate())
 }
 
-@Composable
-fun LastWorkoutCard(
-    navController: NavController,
-    lastWorkout: Workout,
-    completionDate: String,
-    cardColor: Color
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(12.dp))
-            .background(cardColor, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                navController.navigate("workout_detail/${lastWorkout.id}")
-            }
-            .padding(16.dp)
-    ) {
-        Column {
-            Text(
-                text = lastWorkout.title,
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Concluído em: $completionDate",
-                color = Color.White.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun WorkoutScreenPreview() {
-    val navController = rememberNavController()
-    HomeAluno(navController, studentId = "YryaeYWkghYyCEQNIP5J5ojzWo52")
-}
