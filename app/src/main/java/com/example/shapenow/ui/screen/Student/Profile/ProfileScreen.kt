@@ -231,7 +231,7 @@ fun ProfileScreen(navController: NavController ){
                             style = MaterialTheme.typography.titleLarge,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
-                        ImcStatus(imc = imc.toFloatOrNull() ?: 0.0f)
+                        ImcStatus(imc = imc.toFloatOrNull() ?: 0.0f)//tem que ajeitar
                     }
                 }
             }
