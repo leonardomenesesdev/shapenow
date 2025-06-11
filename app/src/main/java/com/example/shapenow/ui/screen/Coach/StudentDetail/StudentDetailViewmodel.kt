@@ -36,7 +36,7 @@ class StudentDetailViewmodel (
         loadStudentData()
     }
 
-    private fun loadStudentData() {
+     fun loadStudentData() {
         if (studentId.isBlank()) return
 
         viewModelScope.launch {

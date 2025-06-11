@@ -45,8 +45,12 @@ import com.example.shapenow.ui.theme.secondaryBlue // Não será mais usado dire
 import com.example.shapenow.ui.theme.textColor1
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.buttonColor // Certifique-se de que esta cor está definida
 
@@ -76,7 +80,23 @@ fun StudentDetailScreen(
     val student by viewModel.studentDetails.collectAsState()
     val workouts by viewModel.studentWorkouts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            // Se o evento for ON_RESUME, significa que a tela voltou a ser visível
+            if (event == Lifecycle.Event.ON_RESUME) {
+                // Pede ao ViewModel para carregar os dados mais recentes
+                viewModel.loadStudentData()
+            }
+        }
+        // Adiciona o observador ao ciclo de vida
+        lifecycleOwner.lifecycle.addObserver(observer)
 
+        // Remove o observador quando o Composable sair da tela para evitar vazamentos de memória
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     Scaffold(
         containerColor = backgColor,
         topBar = {
