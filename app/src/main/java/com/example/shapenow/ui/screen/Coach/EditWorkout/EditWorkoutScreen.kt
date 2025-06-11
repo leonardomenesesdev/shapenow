@@ -137,15 +137,6 @@ fun EditWorkoutScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = customTextFieldColors
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = description,
-                onValueChange = { viewModel.onDescription(it) },
-                label = { Text("Descrição do Treino") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                colors = customTextFieldColors
-            )
             Spacer(modifier = Modifier.height(16.dp))
             Divider(color = Color.Gray)
             Spacer(modifier = Modifier.height(16.dp))
@@ -197,6 +188,7 @@ fun ColumnScope.CurrentExercisesList(exercises: List<Exercise>, onRemoveClick: (
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(exercise.name, modifier = Modifier.weight(1f), color = textColor1)
+                Text(exercise.repetitions, modifier = Modifier.weight(1f), color = textColor1)
                 IconButton(onClick = { onRemoveClick(exercise.id) }) {
                     Icon(
                         Icons.Default.Delete,
@@ -224,6 +216,8 @@ fun ColumnScope.AvailableExercisesList(exercises: List<Exercise>, onAddClick: (S
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(exercise.name, modifier = Modifier.weight(1f), color = textColor1)
+                Text(exercise.repetitions, modifier = Modifier.weight(1f), color = textColor1)
+
                 IconButton(onClick = { onAddClick(exercise.id) }) {
                     Icon(
                         Icons.Default.Add,

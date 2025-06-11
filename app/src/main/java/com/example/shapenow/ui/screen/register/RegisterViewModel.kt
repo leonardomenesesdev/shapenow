@@ -1,7 +1,6 @@
 package com.example.shapenow.ui.screen.register
 
 import androidx.lifecycle.ViewModel
-import com.example.shapenow.data.datasource.model.User
 import com.example.shapenow.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
