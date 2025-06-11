@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies

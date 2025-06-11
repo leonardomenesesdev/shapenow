@@ -1,11 +1,30 @@
 package com.example.shapenow.ui.screen.Coach.EditWorkoutExercise
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,19 +36,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shapenow.data.repository.ExerciseRepository
 import com.example.shapenow.data.repository.WorkoutRepository
+import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.actionColor1
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.textColor1
-import com.example.shapenow.ui.screen.rowdies
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditWorkoutExerciseScreen(
     navController: NavController,
-    // workoutId e exerciseIdToEdit são usados pelo ViewModel via SavedStateHandle
-    // Não são estritamente necessários como parâmetros diretos da tela se o ViewModel os gerencia
-    // Mas mantê-los pode ser útil para clareza ou se precisar deles diretamente na UI
     workoutId: String,
     exerciseIdToEdit: String,
     onExerciseEdited: () -> Unit
@@ -53,7 +69,6 @@ fun EditWorkoutExerciseScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // <<< DEFINIÇÃO DAS CORES PADRÃO PARA TEXTFIELD >>>
     val customTextFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = Color.White, // Cor do texto quando o campo está focado
         unfocusedTextColor = Color.White.copy(alpha = 0.8f), // Cor do texto quando não focado

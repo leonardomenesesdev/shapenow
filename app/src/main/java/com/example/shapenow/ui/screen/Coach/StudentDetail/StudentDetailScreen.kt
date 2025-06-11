@@ -1,6 +1,5 @@
 package com.example.shapenow.ui.screen.Coach.StudentDetail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,8 +45,6 @@ import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
 import androidx.compose.runtime.getValue // <<< IMPORT MAIS IMPORTANTE
 import androidx.compose.foundation.lazy.items // <<< ADICIONE ESTE IMPORT
-import com.example.shapenow.ui.theme.buttonColor
-
 // ...
 class StudentWorkoutsViewModelFactory(
     private val studentRepository: StudentRepository,
@@ -102,8 +99,7 @@ fun StudentDetailScreen(
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .background(backgColor),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
@@ -139,7 +135,7 @@ fun WorkoutListItem(workout: Workout, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = buttonColor)
+        colors = CardDefaults.cardColors(containerColor = secondaryBlue)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
