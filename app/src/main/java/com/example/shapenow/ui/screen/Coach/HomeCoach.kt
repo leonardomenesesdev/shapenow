@@ -80,7 +80,7 @@ fun HomeCoach(
                     )
 
                     BottomBarActionItem(
-                        text = "Treinos",
+                        text = "Novo treino",
                         icon = Icons.Default.Add,
                         onClick = onCreateWorkout
                     )

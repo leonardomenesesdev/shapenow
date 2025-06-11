@@ -141,13 +141,13 @@ fun ProfileScreen(navController: NavController) {
                     Text(
                         text = "Nome: $nome",
                         color = textColor1,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
 
                     Text(
                         text = "E-mail: $mail",
                         color = textColor1,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
 

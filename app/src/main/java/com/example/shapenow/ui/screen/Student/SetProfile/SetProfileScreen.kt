@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.actionColor1
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
@@ -61,10 +62,11 @@ fun SetProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Informções adicionais",
+                text = "Informações adicionais",
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
                 color = textColor1,
+                fontFamily = rowdies,
                 style = MaterialTheme.typography.headlineSmall
             )
 
