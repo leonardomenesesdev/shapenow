@@ -64,12 +64,17 @@ import com.example.shapenow.viewmodel.LoginViewModel
 
 
 @Composable
-fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: (user: User?) -> Unit){
+fun LoginScreen(
+    innerPadding: PaddingValues,
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    onLoginSucess: (user: User?) -> Unit
+) {
     val loginState by loginViewModel.loginState.collectAsState()
-    var email = "joao@gmail.com"
     //var email by remember { mutableStateOf("") }
-    var senha = "senha123"
     //var senha by remember { mutableStateOf("") }
+    var email = "joao@unifor.br"
+    var senha = "senha123"
     var errorMsg by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
     LaunchedEffect(loginState) {
@@ -79,15 +84,17 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     onLoginSucess(user)
                 }
             }
+
             is LoginViewModel.LoginState.Error -> {
                 errorMsg = currentState.message
             }
+
             is LoginViewModel.LoginState.Idle, is LoginViewModel.LoginState.Loading -> {
                 errorMsg = null
             }
         }
     }
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.bg_photo),
             contentDescription = "Foto de um homem treinando",
@@ -100,7 +107,9 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                 .background(Color(0x88000000))
         ) {
             Box(
-                modifier = Modifier.width(40.dp).fillMaxSize()
+                modifier = Modifier
+                    .width(40.dp)
+                    .fillMaxSize()
                     .background(buttonColor)
             )
 
@@ -111,9 +120,9 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column (
+                Column(
                     modifier = Modifier.padding(top = 100.dp)
-                ){
+                ) {
                     Text(
                         buildAnnotatedString {
                             withStyle(
@@ -150,17 +159,27 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
                         text = "Insira seu email",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
-                    DefaultTextField(modifier = Modifier.fillMaxWidth(), label = "Email", value = email, onValueChange = {email = it}, padding = 10)
+                    DefaultTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = "Email",
+                        value = email,
+                        onValueChange = { email = it },
+                        padding = 10
+                    )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
                         text = "Senha",
                         color = Color.White,
                         fontSize = 20.sp,
@@ -171,14 +190,16 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                         modifier = Modifier.fillMaxWidth(),
                         label = "Senha",
                         value = senha,
-                        onValueChange = {senha = it},
+                        onValueChange = { senha = it },
                         padding = 10, // Seu padding original
                         // Passando os novos parâmetros
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            val description = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
+                            val image =
+                                if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description =
+                                if (passwordVisible) "Ocultar senha" else "Mostrar senha"
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(imageVector = image, contentDescription = description)
                             }
@@ -195,25 +216,32 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
                                 navController.navigate("RegisterScreen")
                             }
                             .fillMaxWidth()
-                            .padding(top = 10.dp, start = 10.dp)
-                        ,
+                            .padding(top = 10.dp, start = 10.dp),
                         textAlign = TextAlign.Start
                     )
                     DefaultButton2(
-                        modifier = Modifier.width(150.dp).height(50.dp),
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(50.dp),
                         text = "Entrar",
                         onClick = {
                             Log.i("RegisterScreen", "Botão de registrar clicado")
-                            loginViewModel.login(email, senha)}
+                            loginViewModel.login(email, senha)
+                        }
                     )
 
                     when (loginState) {
                         is LoginViewModel.LoginState.Loading -> {
                             CircularProgressIndicator(color = Color.White)
                         }
+
                         is LoginViewModel.LoginState.Error -> {
                             if (errorMsg != null) {
-                                Text(text = errorMsg!!, color = Color.Red, textAlign = TextAlign.Center)
+                                Text(
+                                    text = errorMsg!!,
+                                    color = Color.Red,
+                                    textAlign = TextAlign.Center
+                                )
                             }
                         }
                         // O caso Success é tratado pelo LaunchedEffect, não precisa de UI aqui

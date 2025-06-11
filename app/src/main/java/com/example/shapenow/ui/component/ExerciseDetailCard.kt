@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shapenow.data.datasource.model.Exercise
+import com.example.shapenow.ui.theme.actionColor1
 
 @Composable
 fun ExerciseDetailCard(
@@ -80,7 +81,7 @@ fun ExerciseDetailCard(
                                 onSeriesCheckedChange(index, newCheckedState)
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Color.Green,
+                                checkedColor = actionColor1,
                                 uncheckedColor = textColor,
                                 checkmarkColor = cardColor
                             )

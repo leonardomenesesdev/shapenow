@@ -20,6 +20,5 @@ fun ImcStatus(imc: Float) {
         color = color,
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(top = 4.dp)
     )
 }

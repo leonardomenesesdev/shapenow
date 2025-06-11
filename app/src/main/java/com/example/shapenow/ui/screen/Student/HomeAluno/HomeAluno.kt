@@ -65,7 +65,7 @@ fun HomeAluno( navController: NavController, studentId: String) {
         containerColor = backgColor,
         bottomBar = {
             BottomAppBar(
-                containerColor = secondaryBlue,
+                containerColor = buttonColor,
                 contentColor = textColor1,
                 tonalElevation = 8.dp
             ) {
@@ -105,7 +105,7 @@ fun HomeAluno( navController: NavController, studentId: String) {
                     .fillMaxWidth()
                     .padding(16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
-                    .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
+                    .background(buttonColor, shape = RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
@@ -113,7 +113,10 @@ fun HomeAluno( navController: NavController, studentId: String) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier
+                        .weight(1f)
+                        .background(buttonColor)
+                    ) {
                         Text(
                             text = "Bem-vindo, ${user?.name ?: "Treinador"}!",
                             color = textColor1,
@@ -150,7 +153,7 @@ fun HomeAluno( navController: NavController, studentId: String) {
                     navController = navController,
                     lastWorkout = lastWorkout,
                     completionDate = formatTimestamp(user?.lastWorkout?.completedAt),
-                    cardColor = secondaryBlue
+                    cardColor = buttonColor
                 )
                 Spacer(modifier = Modifier.height(24.dp))
             }
@@ -180,7 +183,7 @@ fun HomeAluno( navController: NavController, studentId: String) {
                     WorkoutCard(
                         navController = navController,
                         treino = treino,
-                        cardColor = secondaryBlue,
+                        cardColor = buttonColor,
                         highlightColor = textColor1
                     )
                 }
