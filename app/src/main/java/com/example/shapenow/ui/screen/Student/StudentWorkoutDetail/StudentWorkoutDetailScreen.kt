@@ -108,7 +108,13 @@ fun StudentWorkoutDetailScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(buttonColor)
+                    colors = ButtonDefaults.buttonColors(buttonColor),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 8.dp,
+                        pressedElevation = 2.dp,
+                        hoveredElevation = 10.dp,
+                        focusedElevation = 10.dp
+                    )
                 ) {
                     Text("CONCLUIR TREINO", fontWeight = FontWeight.Bold)
                 }

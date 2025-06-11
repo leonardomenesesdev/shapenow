@@ -122,11 +122,7 @@ fun WorkoutDetailScreen(
                 .align(Alignment.BottomCenter)
                 .padding(vertical = 10.dp)
                 .height(70.dp)
-                .width(200.dp)
-                .border(width = 1.dp,
-                    color = textColor1,
-                    shape = RoundedCornerShape(percent = 23)
-                ),
+                .width(200.dp),
             containerColor = buttonColor
         ) {
             Text(text = "Editar Treino", color = Color.White, fontSize = 18.sp)

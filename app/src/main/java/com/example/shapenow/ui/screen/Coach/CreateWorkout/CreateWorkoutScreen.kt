@@ -97,7 +97,13 @@ fun CreateWorkoutScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 2.dp,
+                    hoveredElevation = 10.dp,
+                    focusedElevation = 10.dp
+                )
             ) {
                 Text(
                     "Criar Treino", // Texto mais descritivo
