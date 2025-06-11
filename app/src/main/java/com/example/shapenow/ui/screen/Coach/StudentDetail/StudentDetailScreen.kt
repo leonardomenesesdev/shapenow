@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,13 +41,16 @@ import com.example.shapenow.data.datasource.model.Workout
 import com.example.shapenow.data.repository.StudentRepository
 import com.example.shapenow.data.repository.WorkoutRepository
 import com.example.shapenow.ui.theme.backgColor
-import com.example.shapenow.ui.theme.secondaryBlue
+import com.example.shapenow.ui.theme.secondaryBlue // Não será mais usado diretamente para o card principal
 import com.example.shapenow.ui.theme.textColor1
-import androidx.compose.runtime.getValue // <<< IMPORT MAIS IMPORTANTE
-import androidx.compose.foundation.lazy.items // <<< ADICIONE ESTE IMPORT
-import com.example.shapenow.ui.theme.buttonColor
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.buttonColor // Certifique-se de que esta cor está definida
 
-// ...
+// ... (ViewModelFactory e ViewModel - mantive os seus)
 class StudentWorkoutsViewModelFactory(
     private val studentRepository: StudentRepository,
     private val workoutRepository: WorkoutRepository
@@ -75,7 +77,6 @@ fun StudentDetailScreen(
     val workouts by viewModel.studentWorkouts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-
     Scaffold(
         containerColor = backgColor,
         topBar = {
@@ -89,7 +90,7 @@ fun StudentDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar",
                             tint = textColor1
                         )
@@ -99,26 +100,86 @@ fun StudentDetailScreen(
             )
         }
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(backgColor),
-            contentAlignment = Alignment.Center
+                .background(backgColor)
+                .padding(horizontal = 16.dp, vertical = 8.dp) // Padding para o conteúdo da coluna
         ) {
+            Text(
+                text = "Informações do Aluno",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = rowdies,
+                color = textColor1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth()
+            )
+            // Card de detalhes do aluno - Agora com o mesmo estilo dos treinos
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = buttonColor), // Usando buttonColor
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Adiciona sombra
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Nome: ${student?.name ?: "N/A"}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = textColor1
+                    )
+                    Text(
+                        text = "Email: ${student?.email ?: "N/A"}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = textColor1
+                    )
+                    Text(
+                        text = "Objetivo: ${student?.objetivo ?: "N/A"}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = textColor1
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp)) // Espaço entre os detalhes do aluno e a lista de treinos
+
+
+            // Título para a seção de treinos
+            Text(
+                text = "Treinos",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = rowdies,
+                color = textColor1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth()
+            )
+
+            // Seção da lista de treinos
             if (isLoading) {
-                CircularProgressIndicator()
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             } else if (workouts.isEmpty()) {
-                Text(
-                    text = "Este aluno ainda não possui treinos.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = textColor1.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Este aluno ainda não possui treinos.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = textColor1.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(0.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -139,7 +200,8 @@ fun WorkoutListItem(workout: Workout, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = buttonColor)
+        colors = CardDefaults.cardColors(containerColor = buttonColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -147,8 +209,8 @@ fun WorkoutListItem(workout: Workout, onClick: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium,
                 color = textColor1
             )
-            if (workout.description!!.isNotBlank()) {
-                Spacer(modifier = Modifier.run { height(4.dp) })
+            if (workout.description?.isNotBlank() == true) {
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = workout.description,
                     style = MaterialTheme.typography.bodyMedium,
@@ -158,4 +220,3 @@ fun WorkoutListItem(workout: Workout, onClick: () -> Unit) {
         }
     }
 }
-

@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,9 @@ fun StudentWorkoutDetailScreen(
     val exercises by viewModel.exercises.collectAsState()
     val seriesState by viewModel.seriesState.collectAsState()
 
+    // Estado para controlar a visibilidade do AlertDialog
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = workoutId) {
         viewModel.loadWorkoutDetails(workoutId)
     }
@@ -46,13 +51,16 @@ fun StudentWorkoutDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(workout?.title ?: "Carregando Treino...",
+                    Text(
+                        workout?.title ?: "Carregando Treino...",
                         color = textColor1,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
                         fontFamily = rowdies,
                         fontSize = 32.sp,
-                    ) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = backgColor)
             )
         },
@@ -90,9 +98,8 @@ fun StudentWorkoutDetailScreen(
 
                 Button(
                     onClick = {
-                        viewModel.completeWorkout(workoutId)
-                        // Volta para a tela anterior
-                        navController.popBackStack()
+                        // Exibir o AlertDialog em vez de navegar diretamente
+                        showConfirmationDialog = true
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -104,5 +111,63 @@ fun StudentWorkoutDetailScreen(
                 }
             }
         }
+    }
+
+    // AlertDialog para confirmação
+    // AlertDialog para confirmação
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                // Ação ao dispensar o diálogo (clicar fora ou botão de voltar)
+                showConfirmationDialog = false
+                viewModel.completeWorkout(workoutId) // Marca o treino como completo
+                // Navega para HomeAluno
+                navController.navigate("HomeAluno") {
+                    // Opcional: Limpar a backstack até um destino específico ou a raiz
+                    // popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    // ou popUpTo("tela_anterior_especifica") { inclusive = true }
+                }
+            },
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Treino Concluído!", color = textColor1)
+                }
+            },
+            text = {
+                Text(
+                    "Parabéns por concluir o seu treino. Você será redirecionado para a tela inicial.",
+                    color = textColor1,
+                    textAlign = TextAlign.Center // Centraliza o texto do corpo também, se desejado
+                )
+            },
+            confirmButton = {
+                // Para centralizar o botão, usamos um Row que preenche a largura
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 8.dp
+                        ), // Adiciona um pouco de padding
+                    horizontalArrangement = Arrangement.Center // Centraliza o conteúdo do Row
+                ) {
+                    Button(
+                        onClick = {
+                            showConfirmationDialog = false
+                            viewModel.completeWorkout(workoutId) // Marca o treino como completo
+                            // Navega para HomeAluno
+                            navController.popBackStack()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                    ) {
+                        Text("OK", color = Color.White)
+                    }
+                }
+            },
+            containerColor = backgColor // Cor de fundo do AlertDialog
+        )
     }
 }

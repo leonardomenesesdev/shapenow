@@ -16,3 +16,5 @@ val actionColor1 = Color(0xFF3A86FF)
 val textColor1 = Color(0xFFFFFFFF)
 //val textColor2 = Color(0xFFADB5B)
 val secondaryBlue = Color(0xFF0f306a)
+
+val testbutton3 = Color(0xFF007BFF)

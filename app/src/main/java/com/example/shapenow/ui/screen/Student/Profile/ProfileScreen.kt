@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,13 +46,15 @@ import androidx.navigation.NavController
 import com.example.shapenow.ui.component.BottomBarActionItem
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.secondaryBlue
+import com.example.shapenow.ui.theme.testbutton3
 import com.example.shapenow.ui.theme.textColor1
 import com.google.rpc.context.AttributeContext
 import com.google.rpc.context.AttributeContext.Auth
 
 @Composable
-fun ProfileScreen(navController: NavController ){
+fun ProfileScreen(navController: NavController) {
     val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
 
     val viewModel: ProfileViewmodel = viewModel()
@@ -74,11 +79,11 @@ fun ProfileScreen(navController: NavController ){
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-    Scaffold (
+    Scaffold(
         containerColor = backgColor,
         bottomBar = {
             BottomAppBar(
-                containerColor = secondaryBlue,
+                containerColor = buttonColor,
                 contentColor = textColor1,
                 tonalElevation = 8.dp
             ) {
@@ -90,7 +95,7 @@ fun ProfileScreen(navController: NavController ){
                     BottomBarActionItem(
                         text = "Início",
                         icon = Icons.Default.Home,
-                        onClick = {navController.navigate("HomeAluno/${auth.currentUser?.uid}")}
+                        onClick = { navController.navigate("HomeAluno/${auth.currentUser?.uid}") }
                     )
 
                     BottomBarActionItem(
@@ -105,7 +110,8 @@ fun ProfileScreen(navController: NavController ){
     ) { innerPadding ->
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(backgColor)
                 .padding(16.dp)
                 .padding(innerPadding)
@@ -128,7 +134,7 @@ fun ProfileScreen(navController: NavController ){
                 modifier = Modifier
                     .fillMaxWidth()
                     .shadow(2.dp, RoundedCornerShape(12.dp))
-                    .background(secondaryBlue, shape = RoundedCornerShape(12.dp))
+                    .background(buttonColor, shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .padding(20.dp),
             ) {
@@ -139,13 +145,13 @@ fun ProfileScreen(navController: NavController ){
                     Text(
                         text = "Nome: $nome",
                         color = textColor1,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                     )
 
                     Text(
                         text = "E-mail: $mail",
                         color = textColor1,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
 
@@ -173,7 +179,7 @@ fun ProfileScreen(navController: NavController ){
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(secondaryBlue, shape = RoundedCornerShape(12.dp))
+                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .padding(16.dp)
                 ) {
@@ -188,7 +194,7 @@ fun ProfileScreen(navController: NavController ){
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(secondaryBlue, shape = RoundedCornerShape(12.dp))
+                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .padding(16.dp)
 
@@ -204,7 +210,7 @@ fun ProfileScreen(navController: NavController ){
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(secondaryBlue, shape = RoundedCornerShape(12.dp))
+                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .padding(16.dp)
                 ) {
@@ -219,7 +225,7 @@ fun ProfileScreen(navController: NavController ){
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(secondaryBlue, shape = RoundedCornerShape(12.dp))
+                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .padding(16.dp)
                 ) {
@@ -235,10 +241,32 @@ fun ProfileScreen(navController: NavController ){
                     }
                 }
             }
-            Button(onClick = { navController.navigate("EditProfileScreen") }) {
-                Text(text = "Editar Perfil")
+            Spacer(modifier = Modifier.height(40.dp))
 
-            }
+           Column(
+               modifier = Modifier.fillMaxSize(),
+               horizontalAlignment = Alignment.CenterHorizontally
+           ) {
+               Button(
+                   onClick = { navController.navigate("EditProfileScreen") },
+                   shape = RoundedCornerShape(6.dp),
+                   colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                   //pinhata (comentario pra eu achar a alteração, favor não apagar)
+                   elevation = ButtonDefaults.buttonElevation(
+                       defaultElevation = 8.dp,
+                       pressedElevation = 2.dp,
+                       hoveredElevation = 10.dp,
+                       focusedElevation = 10.dp
+                   )
+               ) {
+                   Text(
+                       text = "Editar Perfil",
+                       fontSize = 16.sp,
+                       fontWeight = Bold,
+                       color = Color.White
+                   )
+               }
+           }
 
         }
 
