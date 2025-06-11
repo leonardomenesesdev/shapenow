@@ -73,7 +73,7 @@ fun HomeCoach(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BottomBarActionItem(
-                        text = "Exercícios",
+                        text = "Novo Exercício",
                         icon = Icons.Default.List,
                         onClick = onCreateExercise
 

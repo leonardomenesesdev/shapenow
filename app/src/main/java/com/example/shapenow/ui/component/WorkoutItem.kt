@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shapenow.data.datasource.model.Workout
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.secondaryBlue
 
 @Composable

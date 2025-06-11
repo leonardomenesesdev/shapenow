@@ -55,17 +55,27 @@ fun ExerciseDetailCard(
                 color = textColor.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.bodyMedium
             )
-            Text(
-                text = "Carga: ${exercise.weight}",
-                color = textColor.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Descanso: ${exercise.rest}",
-                color = textColor.copy(alpha = 0.8f),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
+            if(exercise.weight!="") {
+                Text(
+                    text = "Carga: ${exercise.weight}",
+                    color = textColor.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            if(exercise.rest!="") {
+                Text(
+                    text = "Descanso: ${exercise.rest}",
+                    color = textColor.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            if(exercise.obs!=null) {
+                Text(
+                    text = "Observação: ${exercise.obs}",
+                    color = textColor.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             // Linha com os Checkboxes para cada série

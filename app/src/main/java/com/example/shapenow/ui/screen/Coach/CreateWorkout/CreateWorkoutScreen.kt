@@ -100,7 +100,7 @@ fun CreateWorkoutScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    "Concluir Treino", // Texto mais descritivo
+                    "Criar Treino", // Texto mais descritivo
                     color = textColor1,
                     fontWeight = FontWeight.Bold
                 )
@@ -144,29 +144,10 @@ fun CreateWorkoutScreen(
                     unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
                 )
             )
+
+
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = description,
-                onValueChange = { viewModel.onDescriptionChange(it) },
-                label = { Text("Descrição do treino", color = textColor1) },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                maxLines = 5,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White.copy(alpha = 0.7f),
-                    disabledTextColor = Color.Gray,
-                    cursorColor = actionColor1,
-                    focusedBorderColor = actionColor1,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = actionColor1,
-                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f)
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // <<< MUDANÇA: Campo para Email do Aluno >>>
             OutlinedTextField(
                 value = studentEmail,
                 onValueChange = { viewModel.onStudentEmailChange(it) }, // Chama a função correta

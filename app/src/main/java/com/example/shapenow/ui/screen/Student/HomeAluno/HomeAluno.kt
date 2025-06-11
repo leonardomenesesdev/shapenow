@@ -43,6 +43,7 @@ import com.example.shapenow.ui.component.LastWorkoutCard
 import com.example.shapenow.ui.component.WorkoutCard
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
 import com.google.firebase.Timestamp
