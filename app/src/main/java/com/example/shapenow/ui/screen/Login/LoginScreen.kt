@@ -73,7 +73,7 @@ fun LoginScreen(
     val loginState by loginViewModel.loginState.collectAsState()
     //var email by remember { mutableStateOf("") }
     //var senha by remember { mutableStateOf("") }
-    var email = "joao@unifor.br"
+    var email = "joao@gmail.com"
     var senha = "senha123"
     var errorMsg by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }

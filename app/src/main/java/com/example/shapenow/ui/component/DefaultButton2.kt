@@ -24,6 +24,12 @@ fun DefaultButton2( modifier: Modifier, text: String, onClick: () -> Unit){
         onClick = onClick,
         shape = RoundedCornerShape(6.dp),
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 2.dp,
+            hoveredElevation = 10.dp,
+            focusedElevation = 10.dp
+        )
     ) {
         Text(text = text, fontSize = 16.sp, fontWeight = Bold, color = Color.White)
     }
