@@ -99,7 +99,7 @@ class CreateWorkoutViewmodel(savedStateHandle: SavedStateHandle): ViewModel() {
     }
 
     fun createWorkout(onSuccess: () -> Unit) {
-        if (_title.value.isBlank() || _description.value.isBlank() || _addedExercises.value.isEmpty() || _studentEmail.value.isBlank()) {
+        if (_title.value.isBlank() || _addedExercises.value.isEmpty() || _studentEmail.value.isBlank()) {
             _status.value = "Preencha: Título, Descrição, Email do Aluno e adicione ao menos um exercício."
             return
         }
