@@ -41,8 +41,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shapenow.R
 import com.example.shapenow.ui.component.DefaultButton
+import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.viewmodel.LoginViewModel
 
 
@@ -67,7 +69,7 @@ fun RegisterScreen(innerPadding: PaddingValues, registerViewModel: RegisterViewM
         ) {
             Box(
                 modifier = Modifier.width(40.dp).fillMaxSize()
-                    .background(Color(0xFF2F0C6D))
+                    .background(buttonColor)
             )
 
             Column(
@@ -95,7 +97,7 @@ fun RegisterScreen(innerPadding: PaddingValues, registerViewModel: RegisterViewM
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = rowdies,
                                     fontSize = 46.sp,
-                                    color = Color(0xFF4F44D6)
+                                    color = buttonColor
                                 )
                             ) { append("NOW!") }
                         }
@@ -115,6 +117,7 @@ fun RegisterScreen(innerPadding: PaddingValues, registerViewModel: RegisterViewM
                         },
                         padding = 10,
                         modifier = Modifier
+                            .fillMaxWidth()
                     )
                     DefaultTextField(
                         label = "email@example.com",
@@ -125,6 +128,7 @@ fun RegisterScreen(innerPadding: PaddingValues, registerViewModel: RegisterViewM
                         },
                         padding = 10,
                         modifier = Modifier
+                            .fillMaxWidth()
                     )
                     DefaultTextField(
                         label = "Crie uma senha",
@@ -135,8 +139,10 @@ fun RegisterScreen(innerPadding: PaddingValues, registerViewModel: RegisterViewM
                         },
                         padding = 10,
                         modifier = Modifier
+                            .fillMaxWidth()
+
                     )
-                    DefaultButton(
+                    DefaultButton2(
                         modifier = Modifier.width(150.dp).height(50.dp),
                         text = "Registrar",
                         onClick = {
