@@ -66,10 +66,10 @@ import com.example.shapenow.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: (user: User?) -> Unit){
     val loginState by loginViewModel.loginState.collectAsState()
-    //var email = "joao@gmail.com"
-    var email by remember { mutableStateOf("") }
-    //var senha = "senha123"
-    var senha by remember { mutableStateOf("") }
+    var email = "joao@gmail.com"
+    //var email by remember { mutableStateOf("") }
+    var senha = "senha123"
+    //var senha by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
     LaunchedEffect(loginState) {

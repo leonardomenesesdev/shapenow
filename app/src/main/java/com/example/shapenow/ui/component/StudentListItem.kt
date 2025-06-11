@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.shapenow.data.datasource.model.User
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
 
@@ -23,7 +24,7 @@ fun StudentListItem(student: User.Student, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = secondaryBlue)
+        colors = CardDefaults.cardColors(containerColor = buttonColor)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(

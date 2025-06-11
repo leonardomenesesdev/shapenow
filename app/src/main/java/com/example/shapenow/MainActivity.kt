@@ -17,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shapenow.data.datasource.model.User.Coach
 import com.example.shapenow.data.datasource.model.User.Student
-import com.example.shapenow.ui.screen.Coach.AllStudents.AllStudentScreen
 import com.example.shapenow.ui.screen.Coach.CreateExercise.CreateExerciseScreen
 import com.example.shapenow.ui.screen.Coach.CreateWorkoutScreen
 import com.example.shapenow.ui.screen.Coach.EditWorkout.EditWorkoutScreen
@@ -210,9 +209,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             })
                 }
-                    composable("AllStudentScreen") {
-                        AllStudentScreen(navController=navController)
-                    }
                     composable(
                         route = "StudentDetailScreen/{studentId}",
                         arguments = listOf(navArgument("studentId") { type = NavType.StringType })

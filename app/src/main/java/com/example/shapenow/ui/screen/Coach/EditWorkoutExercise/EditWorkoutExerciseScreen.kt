@@ -10,7 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shapenow.data.repository.ExerciseRepository
@@ -46,7 +48,6 @@ fun EditWorkoutExerciseScreen(
     val exerciseWeight by viewModel.exerciseWeight.collectAsState()
     val exerciseRepetitions by viewModel.exerciseRepetitions.collectAsState()
     val exerciseRest by viewModel.exerciseRest.collectAsState()
-    val exerciseImg by viewModel.exerciseImg.collectAsState()
     val exerciseObs by viewModel.exerciseObs.collectAsState()
     val statusMessage by viewModel.statusMessage.collectAsState()
 
@@ -80,7 +81,20 @@ fun EditWorkoutExerciseScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Editar Exercício no Treino", color = textColor1, fontFamily = rowdies) },
+                title = {
+                    Text(
+                        text = "Editar Exercício",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        fontFamily = rowdies,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp)
+                            .padding(top = 10.dp)
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = backgColor)
             )
         },
@@ -147,17 +161,6 @@ fun EditWorkoutExerciseScreen(
                 colors = customTextFieldColors // <<< USANDO AS CORES PADRÃO >>>
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = exerciseImg,
-                onValueChange = { viewModel.onImgChange(it) },
-                label = { Text("URL da Imagem (opcional)", color = textColor1) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                colors = customTextFieldColors // <<< USANDO AS CORES PADRÃO >>>
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = exerciseObs,
                 onValueChange = { viewModel.onObsChange(it) },

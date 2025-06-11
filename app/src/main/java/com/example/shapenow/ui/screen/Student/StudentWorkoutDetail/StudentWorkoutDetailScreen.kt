@@ -80,7 +80,7 @@ fun StudentWorkoutDetailScreen(
                             onSeriesCheckedChange = { seriesIndex, isChecked ->
                                 viewModel.onSeriesCheckedChange(exercise.id, seriesIndex, isChecked)
                             },
-                            cardColor = secondaryBlue,
+                            cardColor = buttonColor,
                             textColor = textColor1
                         )
                     }

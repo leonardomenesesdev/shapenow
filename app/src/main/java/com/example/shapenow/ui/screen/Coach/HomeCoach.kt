@@ -33,7 +33,9 @@ import com.example.shapenow.ui.component.BottomBarActionItem
 import com.example.shapenow.ui.component.StudentListItem
 import com.example.shapenow.ui.component.WorkoutItem
 import com.example.shapenow.ui.screen.rowdies
+import com.example.shapenow.ui.theme.actionColor1
 import com.example.shapenow.ui.theme.backgColor
+import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.ui.theme.secondaryBlue
 import com.example.shapenow.ui.theme.textColor1
 
@@ -59,12 +61,14 @@ fun HomeCoach(
         containerColor = backgColor,
         bottomBar = {
             BottomAppBar(
-                containerColor = secondaryBlue,
+                containerColor = backgColor,
                 contentColor = textColor1,
                 tonalElevation = 8.dp
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(backgColor),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -72,6 +76,7 @@ fun HomeCoach(
                         text = "Exercícios",
                         icon = Icons.Default.List,
                         onClick = onCreateExercise
+
                     )
 
                     BottomBarActionItem(
@@ -89,6 +94,7 @@ fun HomeCoach(
                 .fillMaxSize()
                 .padding(16.dp) // Aplica o padding do Scaffold
                 .padding(innerPadding)
+                .background(backgColor)
         ) {
             // Cabeçalho (Header)
             Box(
@@ -96,13 +102,16 @@ fun HomeCoach(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
-                    .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
+                    .background(buttonColor, shape = RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(buttonColor)
+
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -123,12 +132,13 @@ fun HomeCoach(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Alunos Cadastrados",
-                style = MaterialTheme.typography.headlineLarge,
-                color = textColor1,
-                modifier = Modifier.padding(bottom = 16.dp),
+                "Alunos Cadastrados",
+                fontWeight = FontWeight.Bold,
                 fontFamily = rowdies,
-                textAlign = TextAlign.Center
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = textColor1
             )
             // Barra de Busca
             OutlinedTextField(
@@ -139,8 +149,18 @@ fun HomeCoach(
                 leadingIcon = {
                     Icon(Icons.Default.Search, contentDescription = "Ícone de busca")
                 },
-                singleLine = true
-                // Adicione suas cores personalizadas aqui se necessário
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White.copy(alpha = 0.8f),
+                    cursorColor = actionColor1,
+                    focusedBorderColor = actionColor1,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedLabelColor = actionColor1,
+                    unfocusedLabelColor = textColor1.copy(alpha = 0.7f),
+                    focusedTrailingIconColor = actionColor1,
+                    unfocusedTrailingIconColor = Color.Gray
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))

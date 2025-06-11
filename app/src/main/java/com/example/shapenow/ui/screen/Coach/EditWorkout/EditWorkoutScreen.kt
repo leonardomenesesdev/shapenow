@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shapenow.data.datasource.model.Exercise
 import com.example.shapenow.data.repository.ExerciseRepository
 import com.example.shapenow.data.repository.WorkoutRepository
+import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.actionColor1
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
@@ -100,8 +102,10 @@ fun EditWorkoutScreen(
             Button(
                 onClick = {
                     viewModel.save(onSuccess = onWorkoutUpdated)
-                          },
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
             ) {
                 Text("Salvar Alterações", color = textColor1)
@@ -109,13 +113,21 @@ fun EditWorkoutScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding).fillMaxSize().padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 text = "Editar Treino",
-                style = MaterialTheme.typography.headlineLarge,
-                color = textColor1,
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 16.dp)
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                fontFamily = rowdies,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
             )
 
             OutlinedTextField(
@@ -144,8 +156,9 @@ fun EditWorkoutScreen(
 
             TabRow(
                 selectedTabIndex = tabIndex,
-                containerColor = secondaryBlue,
-                contentColor = actionColor1) {
+                containerColor = buttonColor,
+                contentColor = textColor1
+            ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         text = { Text(title) },
@@ -161,9 +174,11 @@ fun EditWorkoutScreen(
                     exercises = currentExercisesInWorkout,
                     onRemoveClick = { viewModel.removeExercise(it) }
                 )
+
                 1 -> AvailableExercisesList(
                     exercises = exercisesAvailableToAdd,
                     onAddClick = { viewModel.addNewExercise(it) }
+
                 )
             }
         }
@@ -176,15 +191,24 @@ fun ColumnScope.CurrentExercisesList(exercises: List<Exercise>, onRemoveClick: (
     LazyColumn(modifier = Modifier.weight(1f)) {
         items(exercises, key = { it.id }) { exercise ->
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(exercise.name, modifier = Modifier.weight(1f), color = textColor1)
                 IconButton(onClick = { onRemoveClick(exercise.id) }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remover Exercício", tint = Color.Red)
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Remover Exercício",
+                        tint = Color.Red
+                    )
                 }
             }
+            Divider(color = Color.Gray.copy(alpha = 0.5f), thickness = 0.8.dp)
+
         }
+
     }
 }
 
@@ -194,14 +218,21 @@ fun ColumnScope.AvailableExercisesList(exercises: List<Exercise>, onAddClick: (S
     LazyColumn(modifier = Modifier.weight(1f)) {
         items(exercises, key = { it.id }) { exercise ->
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(exercise.name, modifier = Modifier.weight(1f), color = textColor1)
                 IconButton(onClick = { onAddClick(exercise.id) }) {
-                    Icon(Icons.Default.Add, contentDescription = "Adicionar Exercício", tint = actionColor1)
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Adicionar Exercício",
+                        tint = actionColor1
+                    )
                 }
             }
+            Divider(color = Color.Gray.copy(alpha = 0.5f), thickness = 0.8.dp)
         }
     }
 }

@@ -30,7 +30,7 @@ fun WorkoutItem(
     Box(
         modifier = modifier // Aplicar modificador passado (ex: padding)
             .fillMaxWidth()
-            .background(secondaryBlue, shape = RoundedCornerShape(16.dp))
+            .background(buttonColor, shape = RoundedCornerShape(16.dp))
             .clickable(onClick = onClick) // <-- TORNA A BOX CLICÁVEL
             .padding(16.dp)
     ) {

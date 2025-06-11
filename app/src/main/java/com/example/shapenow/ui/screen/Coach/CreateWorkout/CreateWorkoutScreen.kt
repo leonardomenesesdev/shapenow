@@ -101,6 +101,7 @@ fun CreateWorkoutScreen(
                 fontFamily = rowdies,
                 fontSize = 32.sp,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
                 color = textColor1
             )
             Spacer(modifier = Modifier.height(24.dp)) // Aumentado o espaço
@@ -227,7 +228,7 @@ fun CreateWorkoutScreen(
                             }
                         }
                     )
-                    Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 0.5.dp)
+                    Divider(color = Color.Gray.copy(alpha = 0.5f), thickness = 0.8.dp)
                 }
             }
         }
