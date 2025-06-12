@@ -113,7 +113,6 @@ fun WorkoutDetailScreen(
             Icon(Icons.Default.Delete, contentDescription = "Deletar Treino", tint = Color.White)
         }
 
-        // TODO DIRECIONAR PARA UMA TELA AssociateWorkoutScreen
         FloatingActionButton(
             onClick = {
                 navController.navigate("edit_workout_screen/$workoutId")

@@ -4,36 +4,15 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,30 +27,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.shapenow.R
 import com.example.shapenow.data.datasource.model.User
-import com.example.shapenow.ui.component.DefaultButton
 import com.example.shapenow.ui.component.DefaultButton2
 import com.example.shapenow.ui.component.DefaultTextField
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.buttonColor
 import com.example.shapenow.viewmodel.LoginViewModel
 
-
 @Composable
 fun LoginScreen(innerPadding: PaddingValues, navController: NavController, loginViewModel: LoginViewModel, onLoginSucess: (user: User?) -> Unit){
     val loginState by loginViewModel.loginState.collectAsState()
-//    var email = "joao@gmail.com"
     var email by remember { mutableStateOf("") }
-//    var senha = "senha123"
     var senha by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
+
     LaunchedEffect(loginState) {
         when (val currentState = loginState) {
             is LoginViewModel.LoginState.Success -> {
@@ -87,6 +61,7 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
             }
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.bg_photo),
@@ -94,134 +69,113 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, login
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        Row(
+        // Overlay escuro para melhorar a legibilidade
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)))
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x88000000))
+                .statusBarsPadding()
+                .padding(horizontal = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Box(
-                modifier = Modifier.width(40.dp).fillMaxSize()
-                    .background(buttonColor)
+            // Título SHAPENOW!
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 40.sp, fontFamily = rowdies, color = Color.White)) { append("SHAPE") }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontFamily = rowdies, fontSize = 36.sp, color = buttonColor)) { append("NOW!") }
+                }
             )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0x88000000)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column (
-                    modifier = Modifier.padding(top = 100.dp)
-                ){
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 46.sp,
-                                    fontFamily = rowdies,
-                                    color = Color.White
-                                )
-                            ) { append("SHAPE") }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = rowdies,
-                                    fontSize = 46.sp,
-                                    color = buttonColor
-                                )
-                            ) { append("NOW!") }
-                        }
-                    )
+            Spacer(modifier = Modifier.height(48.dp))
 
-                }
+            // Formulário de Login
+            Text(
+                text = "Acesse sua conta",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(24.dp))
 
-                Column(
-                    modifier = Modifier.padding(bottom = 250.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Acesse sua conta",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
-                        text = "Insira seu email",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-                    )
-                    DefaultTextField(modifier = Modifier.fillMaxWidth(), label = "Email", value = email, onValueChange = {email = it}, padding = 10)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
-                        text = "Senha",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-                    )
-                    DefaultTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = "Senha",
-                        value = senha,
-                        onValueChange = {senha = it},
-                        padding = 10, // Seu padding original
-                        // Passando os novos parâmetros
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            val description = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = description)
-                            }
-                        }
-                    )
-                    Text(
-                        text = "Registrar-se",
-                        color = Color(0xFF7A7A7A),
-                        textDecoration = TextDecoration.Underline,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .clickable {
-                                // Ação ao clicar (exemplo: onclick navegar para a tela de recuperação de senha)
-                                navController.navigate("RegisterScreen")
-                            }
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, start = 10.dp)
-                        ,
-                        textAlign = TextAlign.Start
-                    )
-                    DefaultButton2(
-                        modifier = Modifier.width(150.dp).height(50.dp),
-                        text = "Entrar",
-                        onClick = {
-                            Log.i("RegisterScreen", "Botão de registrar clicado")
-                            loginViewModel.login(email, senha)}
-                    )
+            // Campo de Email
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Email",
+                value = email,
+                onValueChange = {email = it},
+                padding = 0
+            )
 
-                    when (loginState) {
-                        is LoginViewModel.LoginState.Loading -> {
-                            CircularProgressIndicator(color = Color.White)
-                        }
-                        is LoginViewModel.LoginState.Error -> {
-                            if (errorMsg != null) {
-                                Text(text = errorMsg!!, color = Color.Red, textAlign = TextAlign.Center)
-                            }
-                        }
-                        // O caso Success é tratado pelo LaunchedEffect, não precisa de UI aqui
-                        else -> {}
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo de Senha
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Senha",
+                value = senha,
+                onValueChange = {senha = it},
+                padding = 0,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    val description = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, contentDescription = description, tint = Color.White.copy(alpha = 0.7f))
                     }
                 }
-            }
+            )
 
+            // Texto "Registrar-se"
+            Text(
+                text = "Não tem uma conta? Registrar-se",
+                color = Color(0xFFBBBBBB),
+                fontSize = 14.sp,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .clickable { navController.navigate("RegisterScreen") }
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Botão Entrar
+            DefaultButton2(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                text = "Entrar",
+                onClick = {
+                    if (email.isBlank() || senha.isBlank()) {
+                        errorMsg = "Por favor, preencha o email e a senha."
+                    } else {
+                        loginViewModel.login(email, senha)
+                    }
+                }
+            )
+
+            // Espaço para o indicador de Loading ou mensagem de erro
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                when (loginState) {
+                    is LoginViewModel.LoginState.Loading -> {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                    is LoginViewModel.LoginState.Error -> {
+                        if (errorMsg != null) {
+                            Text(text = errorMsg!!, color = Color.Red, textAlign = TextAlign.Center)
+                        }
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 }

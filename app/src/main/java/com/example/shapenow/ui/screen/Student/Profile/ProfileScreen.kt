@@ -1,17 +1,12 @@
 package com.example.shapenow.ui.screen.Student.Profile
 
 import ImcStatus
+// <<< IMPORTS NECESSÁRIOS >>>
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+// ... (seus outros imports)
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AssignmentInd
@@ -32,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,14 +39,11 @@ import com.example.shapenow.ui.component.BottomBarActionItem
 import com.example.shapenow.ui.screen.rowdies
 import com.example.shapenow.ui.theme.backgColor
 import com.example.shapenow.ui.theme.buttonColor
-import com.example.shapenow.ui.theme.secondaryBlue
-import com.example.shapenow.ui.theme.testbutton3
 import com.example.shapenow.ui.theme.textColor1
 
 @Composable
 fun ProfileScreen(navController: NavController) {
     val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
-
     val viewModel: ProfileViewmodel = viewModel()
     val peso by viewModel.peso.collectAsState()
     val altura by viewModel.altura.collectAsState()
@@ -61,57 +52,41 @@ fun ProfileScreen(navController: NavController) {
     val nome by viewModel.nome.collectAsState()
     val mail by viewModel.mail.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            // Recarrega os dados toda vez que a tela é resumida (volta a ficar visível)
             if (event == Lifecycle.Event.ON_RESUME) {
                 viewModel.loadStudent()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-
-        // Remove o observador quando o Composable é descartado
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
     Scaffold(
         containerColor = backgColor,
         bottomBar = {
-            BottomAppBar(
-                containerColor = buttonColor,
-                contentColor = textColor1,
-                tonalElevation = 8.dp
-            ) {
+            BottomAppBar(containerColor = buttonColor, contentColor = textColor1, tonalElevation = 8.dp) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    BottomBarActionItem(
-                        text = "Início",
-                        icon = Icons.Default.Home,
-                        onClick = { navController.navigate("HomeAluno/${auth.currentUser?.uid}") }
-                    )
-
-                    BottomBarActionItem(
-                        text = "Perfil",
-                        icon = Icons.Default.AssignmentInd,
-                        onClick = {}
-                    )
-
+                    BottomBarActionItem(text = "Início", icon = Icons.Default.Home, onClick = { navController.navigate("HomeAluno/${auth.currentUser?.uid}") })
+                    BottomBarActionItem(text = "Perfil", icon = Icons.Default.AssignmentInd, onClick = {})
                 }
             }
         }
     ) { innerPadding ->
-
         Column(
+            // <<< MUDANÇA 1: TORNAR A COLUNA ROLÁVEL E AJUSTAR PADDING >>>
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgColor)
-                .padding(16.dp)
-                .padding(innerPadding)
-
+                .padding(innerPadding) // Usa o padding do Scaffold para não sobrepor a barra inferior
+                .padding(horizontal = 16.dp) // Adiciona padding lateral
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -120,11 +95,8 @@ fun ProfileScreen(navController: NavController) {
                 textAlign = TextAlign.Center,
                 fontFamily = rowdies,
                 fontSize = 32.sp,
-                style = MaterialTheme.typography.titleLarge,
                 color = textColor1,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
             )
             Box(
                 modifier = Modifier
@@ -132,25 +104,13 @@ fun ProfileScreen(navController: NavController) {
                     .shadow(2.dp, RoundedCornerShape(12.dp))
                     .background(buttonColor, shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
-                    .padding(20.dp),
+                    .padding(20.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Nome: $nome",
-                        color = textColor1,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-
-                    Text(
-                        text = "E-mail: $mail",
-                        color = textColor1,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                Column(verticalArrangement = Arrangement.Center) {
+                    Text(text = "Nome: $nome", color = textColor1, style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp)) // Adicionado para espaçamento
+                    Text(text = "E-mail: $mail", color = textColor1, style = MaterialTheme.typography.titleMedium)
                 }
-
             }
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -159,112 +119,60 @@ fun ProfileScreen(navController: NavController) {
                 textAlign = TextAlign.Center,
                 fontFamily = rowdies,
                 fontSize = 32.sp,
-                style = MaterialTheme.typography.titleLarge,
                 color = textColor1,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Objetivo: $objetivo",
-                        color = textColor1,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(16.dp)
 
-                ) {
-                    Text(
-                        text = "Peso: $peso kg",
-                        color = textColor1,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Altura: $altura m",
-                        color = textColor1,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, RoundedCornerShape(12.dp))
-                        .background(buttonColor, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .padding(16.dp)
-                ) {
-                    //TODO AJUSTAR A EXIBICAO DO STATUS DO IMC
-                    Row() {
-                        Text(
-                            text = "IMC: ${"%.2f".format(imc.toFloatOrNull() ?: 0.0f)}",
-                            color = textColor1,
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        ImcStatus(imc = imc.toFloatOrNull() ?: 0.0f)//tem que ajeitar
-                    }
+            // Removida a Column aninhada desnecessária
+            Box(
+                modifier = Modifier.fillMaxWidth().shadow(2.dp, RoundedCornerShape(12.dp)).background(buttonColor, shape = RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp)).padding(16.dp)
+            ) {
+                Text(text = "Objetivo: $objetivo", color = textColor1, style = MaterialTheme.typography.titleLarge)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth().shadow(2.dp, RoundedCornerShape(12.dp)).background(buttonColor, shape = RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp)).padding(16.dp)
+            ) {
+                Text(text = "Peso: $peso kg", color = textColor1, style = MaterialTheme.typography.titleLarge)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth().shadow(2.dp, RoundedCornerShape(12.dp)).background(buttonColor, shape = RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp)).padding(16.dp)
+            ) {
+                Text(text = "Altura: $altura m", color = textColor1, style = MaterialTheme.typography.titleLarge)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth().shadow(2.dp, RoundedCornerShape(12.dp)).background(buttonColor, shape = RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp)).padding(16.dp),
+                contentAlignment = Alignment.Center // Adicionado para centralizar a Row do IMC
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) { // Adicionado CenterVertically
+                    Text(text = "IMC: ${"%.1f".format(imc.toFloatOrNull() ?: 0.0f)}", color = textColor1, style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.width(16.dp))
+                    ImcStatus(imc = imc.toFloatOrNull() ?: 0.0f)
                 }
             }
-            Spacer(modifier = Modifier.height(40.dp))
 
-           Column(
-               modifier = Modifier.fillMaxSize(),
-               horizontalAlignment = Alignment.CenterHorizontally
-           ) {
-               Button(
-                   onClick = { navController.navigate("EditProfileScreen") },
-                   shape = RoundedCornerShape(6.dp),
-                   colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-                   //pinhata (comentario pra eu achar a alteração, favor não apagar)
-                   elevation = ButtonDefaults.buttonElevation(
-                       defaultElevation = 8.dp,
-                       pressedElevation = 2.dp,
-                       hoveredElevation = 10.dp,
-                       focusedElevation = 10.dp
-                   )
-               ) {
-                   Text(
-                       text = "Editar Perfil",
-                       fontSize = 16.sp,
-                       fontWeight = Bold,
-                       color = Color.White
-                   )
-               }
-           }
+            // <<< MUDANÇA 2: USAR SPACER COM WEIGHT PARA EMPURRAR O BOTÃO PARA BAIXO >>>
+            Spacer(modifier = Modifier.weight(1f))
 
+            // Removida a Column aninhada desnecessária que envolvia o botão
+            Button(
+                onClick = { navController.navigate("EditProfileScreen") },
+                shape = RoundedCornerShape(6.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp, pressedElevation = 2.dp, hoveredElevation = 10.dp, focusedElevation = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth() // O botão agora pode ocupar a largura toda
+                    .padding(vertical = 16.dp) // Adiciona espaçamento na base da tela
+            ) {
+                Text(
+                    text = "Editar Perfil",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
-
     }
 }

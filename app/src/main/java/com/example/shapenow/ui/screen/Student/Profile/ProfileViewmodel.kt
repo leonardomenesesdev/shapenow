@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols // <<< IMPORT ADICIONADO
+import java.util.Locale             // <<< IMPORT ADICIONADO
 
 class ProfileViewmodel: ViewModel() {
     private val studentRepository = StudentRepository()
@@ -24,10 +26,12 @@ class ProfileViewmodel: ViewModel() {
     val altura = _altura.asStateFlow()
     private val _objetivo = MutableStateFlow("")
     val objetivo = _objetivo.asStateFlow()
-    private val _imc = MutableStateFlow("")
+    // Inicializa o IMC com uma string que pode ser convertida para float
+    private val _imc = MutableStateFlow("0.0")
     val imc = _imc.asStateFlow()
     private val _status = MutableStateFlow("")
     val status = _status.asStateFlow()
+
     init{
         loadStudent()
         getChanges()
@@ -43,6 +47,7 @@ class ProfileViewmodel: ViewModel() {
                     _peso.value = student.peso
                     _altura.value = student.altura
                     _objetivo.value = student.objetivo
+                    _imc.value = student.imc.replace(",",".") // Garante que o IMC carregado também use ponto
                 }
             }
         }
@@ -92,16 +97,24 @@ class ProfileViewmodel: ViewModel() {
             }
         }
     }
+
+    // <<< FUNÇÃO calcImc CORRIGIDA >>>
     private fun calcImc(p: String, a: String): String{
         val peso = p.replace(",", ".").toFloatOrNull()
         val altura = a.replace(",", ".").toFloatOrNull()
-        if(peso == null || altura == null || peso<=0 || altura<=0){
-            return "Insira seu peso e altura para gerar o IMC"
+        if(peso == null || altura == null || peso <= 0 || altura <= 0){
+            return "0.0" // Retorna uma string numérica válida
         }
-        val alturaMetros = if(altura>3) altura/100 else altura
-        val imc = peso/(alturaMetros*alturaMetros)
-        return DecimalFormat("#.00").format(imc)
+        val alturaMetros = if(altura > 3) altura / 100 else altura
+        val imcValue = peso / (alturaMetros * alturaMetros)
+
+        // Cria um DecimalFormat que sempre usa '.' como separador, independente do celular
+        val symbols = DecimalFormatSymbols(Locale.US)
+        val df = DecimalFormat("#.0", symbols) // Usando uma casa decimal para o IMC é suficiente
+
+        return df.format(imcValue)
     }
+
     fun clear(){
         _status.value=""
     }

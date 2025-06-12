@@ -53,6 +53,7 @@ fun CreateExerciseScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally // <-- Centraliza horizontalmente
         ) {
+            Spacer(Modifier.height(16.dp))
 
             Text(
                 "Criar Exercício",

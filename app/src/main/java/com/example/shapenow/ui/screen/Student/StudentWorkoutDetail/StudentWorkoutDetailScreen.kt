@@ -116,7 +116,7 @@ fun StudentWorkoutDetailScreen(
                         focusedElevation = 10.dp
                     )
                 ) {
-                    Text("CONCLUIR TREINO", fontWeight = FontWeight.Bold)
+                    Text("CONCLUIR TREINO", fontWeight = FontWeight.Bold, color = textColor1)
                 }
             }
         }

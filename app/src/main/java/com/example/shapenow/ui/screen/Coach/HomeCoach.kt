@@ -53,8 +53,8 @@ fun HomeCoach(
     val searchQuery by viewModel.search.collectAsState()
     val filteredStudents by viewModel.filteredStudents.collectAsState()
     LaunchedEffect(coachId) {
-        viewModel.loadWorkouts(coachId)
         viewModel.loadCoach(coachId)
+        viewModel.loadAllStudents()
     }
 
     Scaffold(
