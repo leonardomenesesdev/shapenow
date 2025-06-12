@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -172,21 +173,30 @@ fun HomeAluno( navController: NavController, studentId: String) {
                     .fillMaxWidth()
 
             )
-
-            // Lista de treinos
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                items(workouts) { treino ->
-                    WorkoutCard(
-                        navController = navController,
-                        treino = treino,
-                        cardColor = buttonColor,
-                        highlightColor = textColor1
-                    )
+          if (workouts.isEmpty()) {
+                Text(
+                    text = "Você ainda não possui treinos, entre em contato com um professor.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor1.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                // Lista de treinos
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    items(workouts) { treino ->
+                        WorkoutCard(
+                            navController = navController,
+                            treino = treino,
+                            cardColor = buttonColor,
+                            highlightColor = textColor1
+                        )
+                    }
                 }
             }
 
